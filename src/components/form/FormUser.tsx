@@ -158,7 +158,7 @@ export const FormUser = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Género</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select  key={field.value || 'empty'} onValueChange={field.onChange} defaultValue={field.value || '' }>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecciona tu género" />
@@ -166,7 +166,7 @@ export const FormUser = () => {
                   </FormControl>
                   <SelectContent>
                     {GENDER_OPTIONS.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
+                      <SelectItem   value={option.value}>
                         {option.label}
                       </SelectItem>
                     ))}
