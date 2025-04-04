@@ -23,12 +23,12 @@ export const Login = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();``
-    /*
+    
     if (!captchaValue) {
       setError('Por favor, completa el captcha');
       return;
     }
-    */
+    
       setError('');
       setLoading(true);
       await apiService.post("users/authenticate",{

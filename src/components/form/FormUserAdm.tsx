@@ -67,7 +67,6 @@ const GENDER_OPTIONS = [
   { value: 'masculino', label: 'Masculino' },
   { value: 'femenino', label: 'Femenino' },
   { value: 'otro', label: 'Otro' },
-  { value: 'prefiero_no_decir', label: 'Prefiero no decir' },
 ]
 
 interface FormUserProps {
