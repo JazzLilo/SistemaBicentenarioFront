@@ -18,8 +18,7 @@ import { remove_data } from '@/storage/auth_storage';
 const menuItems = [
   { id: 'dashboard', label: 'Panel Principal', icon: LayoutDashboard },
   { id: 'users', label: 'Usuarios', icon: Users },
-  { id: 'news', label: 'Noticias', icon: Newspaper },
-  { id: 'events', label: 'Eventos', icon: Calendar },
+  { id: 'events', label: 'Eventos Historicos', icon: Calendar },
   { id: 'history', label: 'Historia', icon: Bookmark },
   { id: 'library', label: 'Biblioteca', icon: Book },
   { id: 'comments', label: 'Comentarios', icon: MessageSquare },

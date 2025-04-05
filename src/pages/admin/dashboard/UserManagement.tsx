@@ -20,7 +20,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useEffect, useState } from "react"
-import { ChevronDown, Plus, RefreshCw } from "lucide-react"
+import {  Plus, RefreshCw } from "lucide-react"
 import { DialogUserEdit } from "./edit/DialogUserEdit"
 import { apiService } from "@/services/apiService"
 import { User } from "@/components/interface/user"
