@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { authService } from '@/services/api';
 import {ForgotPasswordContainer} from './ForgotPasswordStyle';
 
 import { apiService } from '@/services/apiService';
-import { set } from 'react-hook-form';
 import { PublicRoutes } from '@/routes/routes';
 
 function ForgotPassword() {
@@ -19,7 +17,7 @@ function ForgotPassword() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
-  const handleSendCode = async (e) => {
+  const handleSendCode = async (e:any) => {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -27,7 +25,7 @@ function ForgotPassword() {
       apiService.post(`users/verify_email_for_recovery?email=${email}`,{}).then((response)=>{
         console.log(response)
         setStep(2);
-      }).catch((error)=>{
+      }).catch((err:any)=>{
         setError('Error al enviar el código: ' + (err.message || 'Inténtalo de nuevo'));       
       }).finally(()=>{
         setLoading(false);
@@ -36,7 +34,7 @@ function ForgotPassword() {
     
   };
 
-  const handleVerifyCode = async (e) => {
+  const handleVerifyCode = async (e:any) => {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -57,13 +55,13 @@ function ForgotPassword() {
 
     try {
       
-    } catch (err) {
+    } catch (err:any) {
       setError('Código inválido: ' + (err.message || 'Inténtalo de nuevo'));
       setLoading(false);
     }
   };
 
-  const handleResetPassword = async (e) => {
+  const handleResetPassword = async (e:any) => {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -89,7 +87,7 @@ function ForgotPassword() {
 
   };
 
-  const togglePasswordVisibility = (field) => {
+  const togglePasswordVisibility = (field:any) => {
     if (field === 'new') {
       setShowNewPassword(!showNewPassword);
     } else if (field === 'confirm') {
@@ -150,7 +148,7 @@ function ForgotPassword() {
                 onChange={(e) => setCode(e.target.value)}
                 placeholder="Ingresa el código de 6 dígitos"
                 required
-                maxLength="6"
+                maxLength={6}
               />
             </div>
             <button 
@@ -183,7 +181,7 @@ function ForgotPassword() {
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Ingresa tu nueva contraseña"
                   required
-                  minLength="8"
+                  minLength={8}
                 />
                 <button 
                   type="button" 
@@ -204,7 +202,7 @@ function ForgotPassword() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirma tu nueva contraseña"
                   required
-                  minLength="8"
+                  minLength={8}
                 />
                 <button 
                   type="button" 

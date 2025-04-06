@@ -11,7 +11,7 @@ export interface EventHistorico {
     ubicacion: Ubicacion;
 }
 
-export interface Multimedia {
+export interface IMultimedia {
     url: string;
     tipo:string;
     id_evento_historico: number;

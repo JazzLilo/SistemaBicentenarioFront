@@ -15,7 +15,6 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, X, Bot, Maximize2, Minimize2 } from "lucide-react";
 
-import { apiService } from "@/services/apiService";
 
 interface Message {
   id: string;

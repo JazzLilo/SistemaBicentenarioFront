@@ -2,12 +2,12 @@ import { useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { apiService } from '@/services/apiService';
 import ReCAPTCHA from 'react-google-recaptcha';
-// Importamos las imágenes
+
 import condorLeft from '@/assets/condorL.jpg';
 import condorRight from '@/assets/condorR.jpg';
 
 import { LoginContainer } from './LoginStyle'
-import { save_data } from '@/storage/auth_storage';
+import  useLocalStorage  from '@/hooks/useLocalStorage';
 import { PrivateRoutes } from '@/routes/routes';
 
 export const Login = () => {
@@ -21,7 +21,13 @@ export const Login = () => {
   const recaptchaRef = useRef(null);
   const navigate = useNavigate();
 
-  async function handleSubmit(e) {
+  const [user] = useLocalStorage('user', '');
+
+  useLocalStorage('email', email);
+
+  console.log(user);
+
+  async function handleSubmit(e:any) {
     e.preventDefault();``
     
     if (!captchaValue) {
@@ -35,13 +41,12 @@ export const Login = () => {
         email,
         password
       }).then((response) => {
-        save_data(response.data?.usuario);
+        console.log(response)
         navigate(PrivateRoutes.Dashboard);
       }).catch((error) => {
         console.error(error);
         setError('Error al iniciar sesión: ' + (error.data.detail || 'Verifica tus credenciales'));
       if (recaptchaRef.current) {
-        recaptchaRef.current.reset();
         setCaptchaValue(null);
       }
       }).finally(() => {
@@ -50,7 +55,7 @@ export const Login = () => {
       );
   }
 
-  const handleCaptchaChange = (value) => {
+  const handleCaptchaChange = (value: any) => {
     setCaptchaValue(value);
     if (error === 'Por favor, completa el captcha') {
       setError('');

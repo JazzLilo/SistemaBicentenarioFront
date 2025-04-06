@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { authService } from '@/services/api';
 import axios from 'axios';
 import { RegisterContainer } from './RegisterStyle';
 import {
@@ -12,7 +11,6 @@ import {
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input";
 import { apiService } from '@/services/apiService';
-import { save_data } from '@/storage/auth_storage';
 import { PublicRoutes } from '@/routes/routes';
 interface Country {
     code: string;
@@ -254,7 +252,6 @@ const Register = () => {
             apiService.post('users/', registerData)
                 .then((response) => {
                     if (response.success) {
-                        save_data(response.data.usuario);
                         navigate(PublicRoutes.VerifyCode);
                     }
                 }

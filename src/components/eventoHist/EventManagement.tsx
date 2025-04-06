@@ -24,6 +24,9 @@ import { Plus, RefreshCw } from "lucide-react"
 import { apiService } from "@/services/apiService"
 import { EventHistorico } from "@/components/interface/eventohistorico"
 import { toast } from "sonner"
+import { DialogDetalles } from "./DialogDetalles"
+import { eventohistoricoAtom } from "@/context/context"
+import useLocalStorage from "@/hooks/useLocalStorage"
 
 export const EventManagement = () => {
   const [sorting, setSorting] = useState<SortingState>([])
@@ -32,6 +35,12 @@ export const EventManagement = () => {
   const [events, setEvents] = useState<EventHistorico[]>([])
   const [loading, setLoading] = useState(false)
   const [globalFilter, setGlobalFilter] = useState('')
+
+  const [open, setOpen] = useState(false)
+  const [selectedEvent, setSelectedEvent] = useState<EventHistorico | null>(null)
+
+  const [eve,setEve] = useLocalStorage<EventHistorico[]>('evento_historico', [])
+  console.log(eve)
 
   const columns: ColumnDef<EventHistorico>[] = [
     {
@@ -73,11 +82,12 @@ export const EventManagement = () => {
       cell: ({ row }) => {
         return (
           <div className="flex space-x-2">
-            <Button variant="outline" size="sm" onClick={() => console.log("Ver detalles", row.original)}>
-              Ver Detalles
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => console.log("Editar evento", row.original)}>
-              Editar
+      
+            <Button variant="outline" size="sm" onClick={() => {
+              setSelectedEvent(row.original)
+              setOpen(true)
+            } }>
+              Ver
             </Button>
             <Button variant="destructive" size="sm" onClick={() => console.log("Eliminar evento", row.original)}>
               Eliminar
@@ -89,19 +99,23 @@ export const EventManagement = () => {
   ]
 
   const fetchEventos = async () => {
-    setLoading(true)
-    try {
-      const response = await apiService.get('eventos_historicos/?skip=0&limit=100')
-      setEvents(response.data)
-    } catch (error) {
+    setEvents(eve)
+    if(eve.length === 0){
+      setLoading(true)
+      await apiService.get('eventos_historicos/?skip=0&limit=100').then((response) => {
+        
+       console.log(response)
+      setEvents(response.data as EventHistorico[])
+      setEve(response.data as EventHistorico[])
+      }).catch((error) => {
       console.error(error)
-      toast({
-        title: "Error",
-        description: "Error al cargar los eventos históricos",
-        variant: "destructive",
-      })
-    } finally {
+      toast.error('Error al cargar eventos históricos')
+    }).finally(() => {
       setLoading(false)
+    })
+    }
+    else{
+      setEvents(eve)
     }
   }
 
@@ -232,6 +246,9 @@ export const EventManagement = () => {
           </Button>
         </div>
       </div>
+      {open && (
+        <DialogDetalles open={open} onOpenChange={setOpen} evento={selectedEvent ?? undefined} />
+      )}
     </div>
   )
 }

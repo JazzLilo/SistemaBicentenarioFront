@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import {
     Dialog,
     DialogContent,
@@ -9,9 +9,9 @@ import {
 import { Button } from '@/components/ui/button'
 import { User } from '@/components/interface/user'
 import { apiService } from '@/services/apiService'
-import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
+
 
 interface DialogProps {
     open: boolean
@@ -47,11 +47,11 @@ export const DialogRoleAdd = ({ open, onOpenChange, userData }: DialogProps) => 
         setLoading(true)
         try {
             const rolesResponse = await apiService.get('roles/?skip=0&limit=100')
-            setRoles(rolesResponse.data)
+            setRoles(rolesResponse.data as any)
             
             const userRolesResponse = await apiService.get(`user_roles/${userData.id}`)
             console.log(userRolesResponse.data)
-            setUserRoles(userRolesResponse.data)
+            setUserRoles(userRolesResponse.data as any)
         } catch (error) {
             console.error(error)
         } finally {

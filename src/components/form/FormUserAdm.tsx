@@ -148,7 +148,7 @@ export const FormUserAdm = ({ userData, onSuccess, mode = 'edit' }: FormUserProp
           imagen: userData?.imagen || "default.jpg"
         });
   
-        const updatedUser = response.data?.usuario || response.data;
+        const updatedUser: User = (response.data as { usuario?: User }).usuario || response.data as User;
         
         if (!updatedUser) {
           throw new Error("No se recibieron datos actualizados del servidor");

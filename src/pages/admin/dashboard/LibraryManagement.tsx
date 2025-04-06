@@ -106,10 +106,12 @@ const [sorting, setSorting] = useState<SortingState>([])
         enableHiding: false,
         cell: ({ row }) => {
           const user = row.original
-  
+
           return (
             <div className="flex space-x-2">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={
+                () => alert(`Editando usuario: ${user.name}`)
+              } >
                 Editar
               </Button>
               <Button variant="outline" size="sm" className="bg-red-50 text-red-600 hover:bg-red-100">

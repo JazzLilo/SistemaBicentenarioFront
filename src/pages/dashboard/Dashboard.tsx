@@ -23,7 +23,7 @@ function Dashboard() {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const navigateToSection = (section) => {
+  const navigateToSection = (section : any) => {
     setActiveSection(section);
   };
 

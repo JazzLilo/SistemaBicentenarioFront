@@ -1,5 +1,5 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { ArrowUp, ArrowDown } from 'lucide-react'
+
 
 const colorVariants = {
   sky: 'bg-sky-50 dark:bg-sky-900/20 border-sky-200 dark:border-sky-800',
@@ -17,7 +17,14 @@ const iconBgColors = {
   rose: 'bg-rose-100 dark:bg-rose-800/50 text-rose-600 dark:text-rose-400'
 }
 
-export const SummaryCard = ({ title, value, change, trend, icon, color = 'sky' }) => {
+export const SummaryCard = ({ title, value, icon, color = 'sky' }:
+  {
+    title: string
+    value: string | number
+    icon: React.ReactNode
+    color?: keyof typeof colorVariants
+  }
+) => {
   return (
     <Card className={`border ${colorVariants[color]} shadow-sm hover:shadow-md transition-shadow duration-300 group`}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">

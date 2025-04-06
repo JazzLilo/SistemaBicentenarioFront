@@ -3,13 +3,11 @@ import { Button } from "@/components/ui/button"
 import { 
   LayoutDashboard,
   Users,
-  Newspaper,
   Calendar,
   Book,
   Bookmark,
   MessageSquare,
   BarChart2,
-  Settings, 
   Menu,
   X
 } from 'lucide-react'
@@ -25,7 +23,12 @@ const menuItems = [
   { id: 'statistics', label: 'Estadísticas', icon: BarChart2 },
 ]
 
-export const Sidebar = ({ activeTab, setActiveTab }) => {
+export const Sidebar = ({ activeTab, setActiveTab }:
+  {
+    activeTab: string
+    setActiveTab: (tab: any) => void
+  }
+) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024)
@@ -45,7 +48,7 @@ export const Sidebar = ({ activeTab, setActiveTab }) => {
   const toggleMobileMenu = () => setIsMobileOpen(!isMobileOpen)
   const toggleCollapse = () => setIsCollapsed(!isCollapsed)
 
-  const handleItemClick = (id) => {
+  const handleItemClick = (id:any) => {
     setActiveTab(id)
     if (windowWidth < 768) {
       setIsMobileOpen(false)

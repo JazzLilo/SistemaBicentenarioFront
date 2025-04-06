@@ -12,7 +12,7 @@ import { CommentModeration } from './CommentModeration'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 export const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState('dashboard')
+  const [activeTab, setActiveTab] = useState<'users' | 'dashboard' | 'events' | 'history' | 'library' | 'comments' | 'statistics' | 'news'>('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const isDesktop = useMediaQuery('(min-width: 768px)')
 
@@ -42,8 +42,6 @@ export const Dashboard = () => {
       <Sidebar 
         activeTab={activeTab} 
         setActiveTab={setActiveTab}
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
       />
       
       <div className="flex flex-col flex-1 overflow-hidden">

@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef} from 'react';
 import { FaUserCircle, FaTools, FaSignOutAlt, FaCaretDown, FaCaretUp } from 'react-icons/fa';
 import { get_data, remove_data } from '@/storage/auth_storage';
 import { useNavigate } from 'react-router-dom';
 import { useClickOutside } from '@/hooks/useClickOutside'; 
 import { DialogPerfil } from './DialogPerfil';
 import { NavRole } from './NavRole';
-import { PublicRoutes, AdminRoutes, CulturalRoutes, AcademicRoutes, OrganizerRoutes, ControladorRoutes } from '@/routes/routes';
+import { PublicRoutes} from '@/routes/routes';
 
 export const NavUser = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

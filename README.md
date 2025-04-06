@@ -8,7 +8,7 @@ FRONT
 
  entonces bajara todo lo que haya subido
  cuando termine 
- npm i
+ yarn install
  por si instale alguna dependencia que se haya agregado
 
 y 

@@ -90,19 +90,14 @@ export const EventManagement = () => {
 
   const fetchEventos = async () => {
     setLoading(true)
-    try {
-      const response = await apiService.get('eventos_historicos/?skip=0&limit=100')
-      setEvents(response.data)
-    } catch (error) {
-      console.error(error)
-      toast({
-        title: "Error",
-        description: "Error al cargar los eventos históricos",
-        variant: "destructive",
-      })
-    } finally {
-      setLoading(false)
-    }
+      await apiService.get('eventos_historicos/?skip=0&limit=100').then
+      (response => {
+        setEvents(response.data as EventHistorico[])
+    }).catch((error: any) => {
+      console.error(error);
+      toast.error("Error al cargar los eventos");
+    });
+    
   }
 
   useEffect(() => {

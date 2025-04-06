@@ -2,7 +2,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { PublicRoutes } from '@/routes/routes';
 
-function ProtectedRoute({ children }) {
+function ProtectedRoute({ children }: { children: JSX.Element }) {
   const { currentUser, loading } = useAuth();
   const location = useLocation();
 

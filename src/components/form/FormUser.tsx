@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
-import { get_data, update_data, save_data} from '@/storage/auth_storage'
+import { get_data} from '@/storage/auth_storage'
 import {
   Select,
   SelectContent,
@@ -92,9 +92,8 @@ export const FormUser = () => {
         ciudad: data.ciudad,
         imagen: "trgin"
       }).then((response) => {
-        console.log(response.data.usuario)
+        console.log(response.data)
         toast.success("Perfil actualizado correctamente")
-        save_data(response.data.usuario)
         window.location.reload()
         }
       );

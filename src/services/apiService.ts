@@ -6,12 +6,7 @@ interface ApiResponse<T = any> {
   status: number;
   success: boolean;
   message: string;
-  data?: T;
-}
-
-interface ApiError extends ApiResponse {
-  error?: string;
-  details?: any;
+  [key: string]: any; // Permite propiedades adicionales directamente en la respuesta
 }
 
 class ApiService {
@@ -21,32 +16,7 @@ class ApiService {
     this.instance = axios.create({
       baseURL: BASE_URL,
       timeout: 10000,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      transformResponse: [
-        (data) => {
-          try {
-            const parsed = JSON.parse(data);
-            if (parsed && typeof parsed === 'object' && 'status' in parsed && 'success' in parsed) {
-              return parsed;
-            }
-            return {
-              status: 200, 
-              success: true,
-              message: 'OK',
-              data: parsed
-            };
-          } catch (e) {
-            return {
-              status: 200,
-              success: true,
-              message: 'OK',
-              data: data
-            };
-          }
-        }
-      ]
+      headers: { 'Content-Type': 'application/json' }
     });
 
     this.initializeResponseInterceptor();
@@ -54,82 +24,67 @@ class ApiService {
 
   private initializeResponseInterceptor() {
     this.instance.interceptors.response.use(
-      (response: AxiosResponse<ApiResponse>) => {
+      (response: AxiosResponse) => {
         const { status, data } = response;
         
+        // Si el backend ya envía la estructura correcta, la devolvemos directamente
         if (data && typeof data === 'object' && 'status' in data && 'success' in data) {
-          return {
-            ...data,
-            status: data.status || status
-          };
+          return { ...data, status: data.status || status };
         }
-        
+
+        // Si no, creamos la estructura base
         return {
           status,
           success: status >= 200 && status < 300,
           message: this.getStatusMessage(status),
-          data
+          ...data // Spread de las propiedades directas
         };
       },
       (error: AxiosError) => {
-        if (error.response) {
-          const { status, data } = error.response;
-          const errorData = data as any;
-          
-          return Promise.reject({
-            status,
-            success: false,
-            message: errorData?.message || error.message,
-            error: errorData?.error,
-            details: errorData?.details,
-            data: errorData?.data || errorData
-          } as ApiError);
-        }
-        
+        const errorResponse = error.response || {};
+        const { status = 500, data = {} } = errorResponse as any;
+
         return Promise.reject({
-          status: 0,
+          status,
           success: false,
-          message: error.request ? 'No se recibió respuesta del servidor' : 'Error al configurar la petición',
-          error: error.request ? 'Network Error' : error.message
-        } as ApiError);
+          message: data.message || error.message,
+          ...data // Spread de los errores del backend
+        });
       }
     );
   }
 
   private getStatusMessage(status: number): string {
-    const messages: Record<number, string> = {
+    const statusMessages: Record<number, string> = {
       200: 'OK',
       201: 'Created',
-      204: 'No Content',
       400: 'Bad Request',
       401: 'Unauthorized',
       403: 'Forbidden',
       404: 'Not Found',
-      500: 'Internal Server Error',
+      500: 'Internal Server Error'
     };
-    return messages[status] || 'Unknown Status';
+    return statusMessages[status] || 'Unknown Status';
   }
 
+  // Métodos HTTP simplificados
   public async get<T>(endpoint: string): Promise<ApiResponse<T>> {
-    const response = await this.instance.get<never, ApiResponse<T>>(endpoint);
-    return response;
+    return this.instance.get(endpoint);
   }
 
   public async post<T>(endpoint: string, data: any): Promise<ApiResponse<T>> {
-    const response = await this.instance.post<never, ApiResponse<T>>(endpoint, data);
-    return response;
+    return this.instance.post(endpoint, data);
   }
 
   public async put<T>(endpoint: string, data: any): Promise<ApiResponse<T>> {
-    const response = await this.instance.put<never, ApiResponse<T>>(endpoint, data);
-    return response;
+    return this.instance.put(endpoint, data);
   }
 
   public async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
-    const response = await this.instance.delete<never, ApiResponse<T>>(endpoint);
-    return response;
+    return this.instance.delete(endpoint);
   }
 
+  // Métodos para el token de autenticación
   public setAuthToken(token: string): void {
     this.instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   }

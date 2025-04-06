@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {ModalContainer} from '@/style/ModalStyle';
+import {ModalContainer} from '@/assets/css/ModalStyle';
 
-const CodeVerificationModal = ({ email, onClose }) => {
+const CodeVerificationModal = ({ email, onClose }:{
+    email: string;
+    onClose: () => void;
+}) => {
     const [verificationCode, setVerificationCode] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -12,7 +15,7 @@ const CodeVerificationModal = ({ email, onClose }) => {
 
     // Contador para permitir reenvío de código
     useEffect(() => {
-        let timer;
+        let timer:any  = null ;
         if (countdown > 0 && !canResend) {
             timer = setTimeout(() => setCountdown(countdown - 1), 1000);
         } else {
@@ -21,7 +24,7 @@ const CodeVerificationModal = ({ email, onClose }) => {
         return () => clearTimeout(timer);
     }, [countdown, canResend]);
 
-    const handleChange = (e) => {
+    const handleChange = (e:any) => {
         setVerificationCode(e.target.value);
         setError('');
     };
@@ -38,7 +41,7 @@ const CodeVerificationModal = ({ email, onClose }) => {
         alert(`Se ha reenviado un nuevo código a ${email}`);
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e:any) => {
         e.preventDefault();
         setLoading(true);
         setError('');
@@ -113,7 +116,7 @@ const CodeVerificationModal = ({ email, onClose }) => {
                                 value={verificationCode}
                                 onChange={handleChange}
                                 required
-                                maxLength="6"
+                                maxLength={6}
                                 className="verification-code-input"
                             />
                         </div>

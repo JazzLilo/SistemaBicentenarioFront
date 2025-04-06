@@ -1,18 +1,24 @@
-import { Menu, Bell, Search, User } from 'lucide-react'
+import { Menu,User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 
-export const Header = ({ activeTab, onMenuClick }) => {
-  const titles = {
-    dashboard: 'Panel Principal',
-    users: 'Gestión de Usuarios',
-    news: 'Gestión de Noticias',
-    events: 'Gestión de Eventos',
-    history: 'Gestión de Historia',
-    library: 'Gestión de Biblioteca',
-    comments: 'Moderación de Comentarios',
-    statistics: 'Estadísticas y Análisis'
+const titles = {
+  dashboard: 'Panel Principal',
+  users: 'Gestión de Usuarios',
+  news: 'Gestión de Noticias',
+  events: 'Gestión de Eventos',
+  history: 'Gestión de Historia',
+  library: 'Gestión de Biblioteca',
+  comments: 'Moderación de Comentarios',
+  statistics: 'Estadísticas y Análisis'
+}
+
+export const Header = ({ activeTab, onMenuClick }:
+  {
+    activeTab: keyof typeof titles
+    onMenuClick: () => void
   }
+) => {
+    
 
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 md:px-6 border-b border-gray-200 dark:border-gray-800 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-sm">

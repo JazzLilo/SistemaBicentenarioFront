@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 
 import { CheckEmailContainer } from './checkEmail/CheckEmailStyle';
 import { apiService } from '@/services/apiService';
@@ -54,7 +54,7 @@ function VerifyCode() {
                 onChange={(e) => setCode(e.target.value)}
                 placeholder="Ingresa el código de 6 dígitos"
                 required
-                maxLength="6"
+                maxLength={6}
               />
             </div>
             <button 

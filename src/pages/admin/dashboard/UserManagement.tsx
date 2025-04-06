@@ -208,7 +208,7 @@ export const UserManagement = () => {
     setLoading(true)
     try {
       const response = await apiService.get('users/?skip=0&limit=100')
-      setUsers(response.data)
+      setUsers(response.data as User[])
     } catch (error) {
       console.error(error)
       toast.error("Error al cargar los usuarios")
@@ -335,11 +335,13 @@ export const UserManagement = () => {
         open={openUserC} 
         onOpenChange={setOpenUserC}
       />
-      <DialogRoleAdd 
-        open={openRole} 
-        onOpenChange={setOpenRole}
-        userData={selectedUser}
-      />
+      {selectedUser && (
+        <DialogRoleAdd 
+          open={openRole} 
+          onOpenChange={setOpenRole}
+          userData={selectedUser}
+        />
+      )}
 
     </div>
   )

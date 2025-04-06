@@ -2,15 +2,13 @@ import { useState, useEffect } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { SummaryCard } from "./SummaryCard"
 import { ActivityTable } from "@/components/activity-table"
-import { Users, Newspaper, Calendar, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { Users, Newspaper, Calendar} from 'lucide-react'
 import { apiService } from "@/services/apiService"
+import { User } from "@/components/interface"
 
 export const DashboardHome = () => {
 
   const [countUsers, setCountUsers] = useState(0)
-  const [countNews, setCountNews] = useState(0)
-  const [countEvents, setCountEvents] = useState(0)
-  const [countAlerts, setCountAlerts] = useState(0)
 
   const summaryData = [
     { 
@@ -19,7 +17,7 @@ export const DashboardHome = () => {
       change: '+12%', 
       trend: 'up',
       icon: <Users className="h-5 w-5" />,
-      color: 'sky'
+      color: "sky" as "sky"
     },
     { 
       title: 'Noticias', 
@@ -27,7 +25,7 @@ export const DashboardHome = () => {
       change: '+5%', 
       trend: 'up',
       icon: <Newspaper className="h-5 w-5" />,
-      color: 'emerald'
+      color: "emerald" as "emerald"
     },
     { 
       title: 'Eventos', 
@@ -35,7 +33,7 @@ export const DashboardHome = () => {
       change: '+8%', 
       trend: 'up',
       icon: <Calendar className="h-5 w-5" />,
-      color: 'amber'
+      color: "amber" as "amber"
     }
   ]
 
@@ -44,14 +42,16 @@ export const DashboardHome = () => {
   }, [])
 
   const fetchUsers = async () => {
-    await apiService.get('users/?skip=0&limit=100').then((response) => {
-      const users = response.data
-      setCountUsers(users.length)
-    }
-    )
-  }
+    
+      await apiService.get('users/?skip=0&limit=100').then((response) => {
+        const users = response.data as User[];
+      console.log(users);
+      setCountUsers(users.length); 
+      }).catch((error) => {
+        console.error("Error fetching users:", error);
+      });
+  };
   
-
   return (
     <div className=" bg-slate-900 rounded-xl shadow-xl container mx-auto px-4 py-6">
      

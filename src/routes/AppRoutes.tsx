@@ -1,16 +1,14 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter,  Route } from 'react-router-dom';
 import {Login, Register, CheckEmail, ForgotPassword} from '@/pages/auth';
-import ProtectedRoute from '@/components/ProtectedRoute';
-import { AuthProvider } from '@/context/AuthProvider';
 import Dashboard from '@/pages/dashboard/Dashboard';
-import {AppContainer} from '@/style/App';
+import {AppContainer} from '@/assets/css/App';
 import VerifyCode from '@/pages/auth/VerifyCode';
 
 import { PublicRoutes, PrivateRoutes, AdminRoutes } from './routes';
 import RoutesNotFound from '@/lib/RoutesNotFound';
-
+import useLocalStorage from '@/hooks/useLocalStorage';
 import { Admin } from '@/pages/admin/Admin';
+import { User } from '@/components/interface';
 
 /*
 <Route 
@@ -24,6 +22,10 @@ import { Admin } from '@/pages/admin/Admin';
 */
 
 function App() {
+
+  const [user] = useLocalStorage<string>('session_token', '');
+  console.log(user);
+
   return (
     <BrowserRouter>
         <AppContainer>
