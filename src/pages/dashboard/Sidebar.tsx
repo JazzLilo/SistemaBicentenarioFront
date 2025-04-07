@@ -46,7 +46,7 @@ function Sidebar({ sidebarOpen, toggleSidebar, activeSection, navigateToSection 
         </button>
         <button
           className={`nav-item ${activeSection === 'patrimonio' ? 'active' : ''}`}
-          onClick={() => navigateToSection('patrimonio')}
+          onClick={() => navigateToSection('presidentes')}
         >
           <FaLandmark /> Presidentes
         </button>

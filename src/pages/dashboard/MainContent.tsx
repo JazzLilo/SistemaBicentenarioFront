@@ -4,7 +4,7 @@ import Videos from './sections/Videos';
 import Eventos from './sections/Eventos';
 import Festividades from './sections/Festividades';
 import Patrimonio from './sections/Patrimonio';
-
+import { Presidentes } from './sections/Presidentes';
 interface MainContentProps {
   activeSection: string;
 }
@@ -18,6 +18,7 @@ function MainContent({ activeSection }: MainContentProps) {
       {activeSection === 'musica' && <Eventos />}
       {activeSection === 'festividades' && <Festividades />}
       {activeSection === 'patrimonio' && <Patrimonio />}
+      {activeSection === 'presidentes' && <Presidentes />}
     </div>
   );
 }

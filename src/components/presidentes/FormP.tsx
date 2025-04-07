@@ -81,7 +81,7 @@ export const FormP = ({ mode, onSubmit }: FormPProps) => {
     
     try {
       setIsUploading(true);
-      const uploadResponse = await apiService.postFiles('files/upload', formData);
+      const uploadResponse:any = await apiService.postFiles('files/upload', formData);
       return uploadResponse.data.file_url;
     } catch (error) {
       console.error("Error uploading image:", error);

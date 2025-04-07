@@ -158,20 +158,54 @@ export const EventHistoricoForm = ({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const eventData: EventHistorico = {
-      id: isEdit && eventAtom ? eventAtom.id : Date.now(),
-      nombre,
-      descripcion,
-      fecha_inicio: fechaInicio,
-      fecha_fin: fechaFin,
-      tipo,
-      id_ubicacion: ubicacionInfo.id,
-      ubicacion: ubicacionInfo,
-    };
-    onSubmit(eventData);
+
+  const uploadImage = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('name', `${nombre}-${Date.now()}`);
+    formData.append('tipo', 'evento_h');
+    
+    try {
+      const uploadResponse:any = await apiService.postFiles('files/upload', formData);
+      return uploadResponse.data.file_url; 
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error; 
+    }
   };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+    
+      try {
+        let imagenUrl = ubicacionInfo.imagen;
+    
+        if (imageFile) {
+          imagenUrl = await uploadImage(imageFile);
+        }
+    
+        const ubicacionActualizada = {
+          ...ubicacionInfo,
+          imagen: imagenUrl
+        };
+    
+        const eventData: EventHistorico = {
+          id: isEdit && eventAtom ? eventAtom.id : Date.now(),
+          nombre,
+          descripcion,
+          fecha_inicio: fechaInicio,
+          fecha_fin: fechaFin,
+          tipo,
+          id_ubicacion: ubicacionInfo.id,
+          ubicacion: ubicacionActualizada,
+        };
+    
+        onSubmit(eventData);
+    
+      } catch (error) {
+        console.error("Error al procesar el formulario:", error);
+      }
+    };
 
   return (
     <form onSubmit={handleSubmit} className="">

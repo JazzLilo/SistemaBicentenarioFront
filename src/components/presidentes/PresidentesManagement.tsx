@@ -25,6 +25,10 @@ import { Plus, RefreshCw } from "lucide-react"
 import { toast } from "sonner"
 import { apiService } from "@/services/apiService"
 import { DialogCrear } from "./DialogCrear"
+import { DialogDetalles } from "./DialogDetalles"
+import { useAtom } from "jotai"
+import { presidenteAtom } from "@/context/context"
+
 
  const PresidentesManagement = () => {
    const [sorting, setSorting] = useState<SortingState>([])
@@ -33,11 +37,13 @@ import { DialogCrear } from "./DialogCrear"
     const [pres, setPres] = useState<Presidente[]>([])
     const [loading, setLoading] = useState(false)
     const [globalFilter, setGlobalFilter] = useState('')
+
+    
   
     const [open, setOpen] = useState(false)
     const [openCrear, setOpenCrear] = useState(false)
-    const [selectedPres, setSelectedPres] = useState<Presidente| null>(null)
-
+    const [, setSelectedPres] = useState<Presidente| null>(null)
+    const [, setPresidente] = useAtom(presidenteAtom)
     const columns: ColumnDef<Presidente>[] = [
         {
           accessorKey: "nombre",
@@ -73,11 +79,12 @@ import { DialogCrear } from "./DialogCrear"
     
                 <Button variant="outline" size="sm" onClick={() => {
                   setSelectedPres(row.original)
+                  setPresidente(row.original)
                   setOpen(true)
                 }}>
                   Ver
                 </Button>
-                <Button variant="destructive" size="sm" onClick={() => console.log("Eliminar evento", row.original)}>
+                <Button variant="destructive" size="sm" onClick={() => handleRemove(row.original.id)}>
                   Eliminar
                 </Button>
               </div>
@@ -85,6 +92,17 @@ import { DialogCrear } from "./DialogCrear"
           }
         }
       ]
+
+      const handleRemove = async (id: number) => {
+        await apiService.delete(`presidentes/${id}`).then(() => {
+          fetchPresidentes()
+          toast.success("Presidente eliminado correctamente")
+        }
+        ).catch((err: any) => {
+          console.log(err)
+          toast.error("Error al eliminar el presidente")
+        })
+      }
 
       const fetchPresidentes = async () => {
         setLoading(true)
@@ -230,6 +248,9 @@ import { DialogCrear } from "./DialogCrear"
           </div>
           {openCrear  && (
             <DialogCrear open={openCrear} onOpenChange={setOpenCrear} />
+          )}
+          {open && (
+            <DialogDetalles open={open} onOpenChange={setOpen} />
           )}
         </div>
   )
