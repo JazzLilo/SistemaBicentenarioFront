@@ -5,11 +5,11 @@ import {
   Users,
   Calendar,
   Book,
-  Bookmark,
   MessageSquare,
   BarChart2,
   Menu,
-  X
+  X,
+  
 } from 'lucide-react'
 import { FaDoorClosed } from "react-icons/fa";
 import { remove_data } from '@/storage/auth_storage';
@@ -17,8 +17,9 @@ const menuItems = [
   { id: 'dashboard', label: 'Panel Principal', icon: LayoutDashboard },
   { id: 'users', label: 'Usuarios', icon: Users },
   { id: 'events', label: 'Eventos Historicos', icon: Calendar },
-  { id: 'history', label: 'Historia', icon: Bookmark },
   { id: 'library', label: 'Biblioteca', icon: Book },
+  { id: 'cultura', label: 'Cultura', icon: Book },
+  { id: 'presidentes', label: 'presidentes', icon: Book },
   { id: 'comments', label: 'Comentarios', icon: MessageSquare },
   { id: 'statistics', label: 'Estadísticas', icon: BarChart2 },
 ]

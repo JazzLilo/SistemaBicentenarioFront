@@ -11,6 +11,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import ReactPlayer from "react-player";
 
 export const ShowEvento = () => {
   const [evento] = useAtom(eventohistoricoAtom);
@@ -31,6 +32,7 @@ export const ShowEvento = () => {
   const fetchMultimedia = async (id: number) => {
     try {
       const response:any = await apiService.get(`multimedia/evento_historico/${id}`);
+      console.log("Multimedia response:", response.data);
       setMultimedia(response.data);
     } catch (err) {
       console.error("Error fetching multimedia:", err);
@@ -122,14 +124,14 @@ export const ShowEvento = () => {
                           </div>
                         ) : (
                           <div className="relative aspect-video rounded-lg overflow-hidden">
-                            <iframe
-                              src={item.url}
-                              title={`Video ${item.id}`}
-                              className="w-full h-full"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                              allowFullScreen
-                            ></iframe>
-                          </div>
+                          <ReactPlayer 
+                            url={item.url}
+                            width="100%"
+                            height="100%"
+                            controls
+                            className="absolute top-0 left-0"
+                          />
+                        </div>
                         )}
                       </CarouselItem>
                     ))}

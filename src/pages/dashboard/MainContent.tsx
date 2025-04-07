@@ -1,7 +1,7 @@
 import Inicio from './sections/Inicio';
 import Historia from './sections/Historia';
 import Videos from './sections/Videos';
-import Musica from './sections/Musica';
+import Eventos from './sections/Eventos';
 import Festividades from './sections/Festividades';
 import Patrimonio from './sections/Patrimonio';
 
@@ -15,7 +15,7 @@ function MainContent({ activeSection }: MainContentProps) {
       {activeSection === 'inicio' && <Inicio />}
       {activeSection === 'historia' && <Historia />}
       {activeSection === 'videos' && <Videos />}
-      {activeSection === 'musica' && <Musica />}
+      {activeSection === 'musica' && <Eventos />}
       {activeSection === 'festividades' && <Festividades />}
       {activeSection === 'patrimonio' && <Patrimonio />}
     </div>

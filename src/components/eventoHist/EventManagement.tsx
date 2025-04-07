@@ -42,7 +42,7 @@ export const EventManagement = () => {
   const [openCrear, setOpenCrear] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<EventHistorico | null>(null)
 
-  const [eve,setEve] = useLocalStorage<EventHistorico[]>('evento_historico', [])
+  const [eve, setEve] = useLocalStorage<EventHistorico[]>('evento_historico', [])
   console.log(eve)
 
   const columns: ColumnDef<EventHistorico>[] = [
@@ -85,11 +85,11 @@ export const EventManagement = () => {
       cell: ({ row }) => {
         return (
           <div className="flex space-x-2">
-      
+
             <Button variant="outline" size="sm" onClick={() => {
               setSelectedEvent(row.original)
               setOpen(true)
-            } }>
+            }}>
               Ver
             </Button>
             <Button variant="destructive" size="sm" onClick={() => console.log("Eliminar evento", row.original)}>
@@ -105,20 +105,20 @@ export const EventManagement = () => {
     setEvents(eve)
     setLoading(true)
     await apiService.get('eventos_historicos/?skip=0&limit=100').then((response) => {
-      
-     console.log(response)
-    setEvents(response.data as EventHistorico[])
-    setEve(response.data as EventHistorico[])
+
+      console.log(response)
+      setEvents(response.data as EventHistorico[])
+      setEve(response.data as EventHistorico[])
     }).catch((error) => {
-    console.error(error)
-    toast.error('Error al cargar eventos históricos')
-  }).finally(() => {
-    setLoading(false)
-  })
-    if(eve.length === 0){
-     
+      console.error(error)
+      toast.error('Error al cargar eventos históricos')
+    }).finally(() => {
+      setLoading(false)
+    })
+    if (eve.length === 0) {
+
     }
-    else{
+    else {
       setEvents(eve)
     }
   }
@@ -256,7 +256,7 @@ export const EventManagement = () => {
         <DialogDetalles open={open} onOpenChange={setOpen} evento={selectedEvent ?? undefined} />
       )}
       {openCrear && (
-        <DialogCrear open={openCrear} onOpenChange={setOpenCrear}/>
+        <DialogCrear open={openCrear} onOpenChange={setOpenCrear} />
       )}
     </div>
   )

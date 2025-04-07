@@ -27,12 +27,6 @@ function Sidebar({ sidebarOpen, toggleSidebar, activeSection, navigateToSection 
           <FaHome /> Inicio
         </button>
         <button
-          className={`nav-item ${activeSection === 'historia' ? 'active' : ''}`}
-          onClick={() => navigateToSection('historia')}
-        >
-          <FaBook /> Historia
-        </button>
-        <button
           className={`nav-item ${activeSection === 'videos' ? 'active' : ''}`}
           onClick={() => navigateToSection('videos')}
         >
@@ -42,7 +36,7 @@ function Sidebar({ sidebarOpen, toggleSidebar, activeSection, navigateToSection 
           className={`nav-item ${activeSection === 'musica' ? 'active' : ''}`}
           onClick={() => navigateToSection('musica')}
         >
-          <FaMusic /> Eventos
+          <FaBook /> Eventos Historicos
         </button>
         <button
           className={`nav-item ${activeSection === 'festividades' ? 'active' : ''}`}
