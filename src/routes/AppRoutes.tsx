@@ -8,6 +8,7 @@ import { PublicRoutes, PrivateRoutes, AdminRoutes } from './routes';
 import RoutesNotFound from '@/lib/RoutesNotFound';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { Admin } from '@/pages/admin/Admin';
+import { ShowEvento } from '@/components/eventoHist/ShowEvento';
 
 /*
 <Route 
@@ -34,6 +35,8 @@ function App() {
             <Route path={PublicRoutes.VerifyCode} element={<VerifyCode />} />
             <Route path={PublicRoutes.Register} element={<Register />} />
             <Route path={PublicRoutes.ForgotPassword} element={<ForgotPassword />} />
+            <Route path={PublicRoutes.Evento} element={<ShowEvento />} />
+
             
             <Route 
               path={PrivateRoutes.Dashboard} 

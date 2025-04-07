@@ -4,6 +4,7 @@ export const PublicRoutes = {
     CheckEmail: '/check-email',
     VerifyCode: '/verify-code',
     ForgotPassword: '/forgot-password',
+    Evento: '/eventos',
 }
 
 export const PrivateRoutes = {
