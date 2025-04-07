@@ -62,7 +62,7 @@ function CheckEmail() {
               className="primary-button"
               disabled={loading}
             >
-              {loading ? 'Enviando...' : 'Enviar código de verificación'}
+              {loading ? 'Enviando...' : 'Verificar correo'}
             </button>
           </form>
 
