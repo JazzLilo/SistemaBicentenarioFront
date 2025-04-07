@@ -3,7 +3,6 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogDescription,
 } from "@/components/ui/dialog"
 import {EventHistoricoForm} from "./FormEH"
 import { useAtom } from "jotai"

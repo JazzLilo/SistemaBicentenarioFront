@@ -2,10 +2,11 @@ import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL as string;
 
-interface ApiResponse<T = any> {
+interface ApiResponse<T> {
   status: number;
   success: boolean;
   message: string;
+  data: T; 
   [key: string]: any;
 }
 

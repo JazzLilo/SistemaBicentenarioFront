@@ -8,7 +8,6 @@ import { PublicRoutes, PrivateRoutes, AdminRoutes } from './routes';
 import RoutesNotFound from '@/lib/RoutesNotFound';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { Admin } from '@/pages/admin/Admin';
-import { User } from '@/components/interface';
 
 /*
 <Route 

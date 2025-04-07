@@ -38,8 +38,8 @@ export const Multimedia = () => {
   const fetchData = useCallback(async () => {
     setIsGalleryLoading(true);
     try {
-      const response = await apiService.get(`multimedia/evento_historico/${eve?.id}`);
-      const sortedItems = response.data.sort((a: IMultimedia, b: IMultimedia) => b.id - a.id);
+      const response:any = await apiService.get(`multimedia/evento_historico/${eve?.id}`);
+      const sortedItems = response.data.sort((a: IMultimedia, b: IMultimedia) => b.id - a.id) ;
       setMultimediaItems(sortedItems);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -67,7 +67,8 @@ export const Multimedia = () => {
   };
 
   const validateUrl = (url: string, tipo: 'imagen' | 'video') => {
-  
+    if (!url) return 'La URL no puede estar vacía';
+    console.log('Validando URL:', url, tipo);
     try {
       new URL(url);
       return '';
@@ -99,7 +100,7 @@ export const Multimedia = () => {
         formData.append('name', `${eve.nombre}-multimedia`);
         formData.append('tipo', 'multimedia');
 
-        const uploadResponse = await apiService.postFiles('files/upload', formData);
+        const uploadResponse:any = await apiService.postFiles('files/upload', formData);
         fileUrl = uploadResponse.data.file_url;
       }
 

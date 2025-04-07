@@ -24,7 +24,7 @@ export const TabEHist = () => {
         imagen: data.ubicacion.imagen,
       })
       .then((response) => {console.log(response); toast.success("Ubicación creada correctamente")          
-          id_ubicacion = response.data;
+          id_ubicacion = response.data as any;
       })
       .catch((error) => {console.log(error)});
     }

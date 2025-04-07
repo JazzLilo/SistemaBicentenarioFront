@@ -1,9 +1,8 @@
-import { useState, useRef, useMemo, useCallback } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import { Marker, Popup, MapContainer, TileLayer } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-// Solución para los íconos que no se muestran
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -22,14 +21,12 @@ export const MapaInteractivo = ({ initialPosition = defaultCenter, onChange }:
   const [position, setPosition] = useState(initialPosition);
   const markerRef = useRef<L.Marker>(null);
 
-  // Cuando se termina de arrastrar el marcador, se actualiza la posición
   const eventHandlers = useMemo(
     () => ({
       dragend() {
         if (markerRef.current) {
           const newPos = markerRef.current.getLatLng();
           setPosition(newPos);
-          // Se notifica al componente padre
           if (onChange) onChange(newPos);
         }
       },

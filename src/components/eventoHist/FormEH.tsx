@@ -47,8 +47,8 @@ export const EventHistoricoForm = ({
 
   const [categorias, setCategorias] = useState<Categoria[]>([]);
 
-  const [fechaInicioDisplay, setFechaInicioDisplay] = useState("");
-  const [fechaFinDisplay, setFechaFinDisplay] = useState("");
+  const [, setFechaInicioDisplay] = useState("");
+  const [, setFechaFinDisplay] = useState("");
   const [loadingCategorias, setLoadingCategorias] = useState(true);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -62,11 +62,9 @@ export const EventHistoricoForm = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1. Primero cargar las categorías
-        const res = await apiService.get("categorias/?skip=0&limit=100");
+        const res:any = await apiService.get("categorias/?skip=0&limit=100");
         setCategorias(res.data);
 
-        // 2. Solo después de cargar categorías, establecer los valores del evento
         if (isEdit && eventAtom) {
           setNombre(eventAtom.nombre);
           setDescripcion(eventAtom.descripcion);
@@ -86,7 +84,7 @@ export const EventHistoricoForm = ({
     };
 
     fetchData();
-  }, [isEdit]); // Solo dependemos de isEdit
+  }, [isEdit]); 
 
   const findCategoriaByNombre = (nombre: string) => {
     return categorias.find(c =>
@@ -143,7 +141,7 @@ export const EventHistoricoForm = ({
     const file = e.target.files?.[0];
     if (file) {
       setImageFile(file);
-      // Crear vista previa
+      
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
