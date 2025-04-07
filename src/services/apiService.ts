@@ -6,7 +6,7 @@ interface ApiResponse<T = any> {
   status: number;
   success: boolean;
   message: string;
-  [key: string]: any; // Permite propiedades adicionales directamente en la respuesta
+  [key: string]: any;
 }
 
 class ApiService {
@@ -26,18 +26,15 @@ class ApiService {
     this.instance.interceptors.response.use(
       (response: AxiosResponse) => {
         const { status, data } = response;
-        
-        // Si el backend ya envía la estructura correcta, la devolvemos directamente
         if (data && typeof data === 'object' && 'status' in data && 'success' in data) {
           return { ...data, status: data.status || status };
         }
 
-        // Si no, creamos la estructura base
         return {
           status,
           success: status >= 200 && status < 300,
           message: this.getStatusMessage(status),
-          ...data // Spread de las propiedades directas
+          ...data
         };
       },
       (error: AxiosError) => {
@@ -48,7 +45,7 @@ class ApiService {
           status,
           success: false,
           message: data.message || error.message,
-          ...data // Spread de los errores del backend
+          ...data
         });
       }
     );
@@ -67,7 +64,6 @@ class ApiService {
     return statusMessages[status] || 'Unknown Status';
   }
 
-  // Métodos HTTP simplificados
   public async get<T>(endpoint: string): Promise<ApiResponse<T>> {
     return this.instance.get(endpoint);
   }
@@ -84,7 +80,15 @@ class ApiService {
     return this.instance.delete(endpoint);
   }
 
-  // Métodos para el token de autenticación
+  // Método para envío de archivos
+  public async postFiles<T>(endpoint: string, formData: FormData): Promise<ApiResponse<T>> {
+    return this.instance.post(endpoint, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  }
+
   public setAuthToken(token: string): void {
     this.instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   }

@@ -2,8 +2,55 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Multimedia } from './Multimedia'
 import { Detalles } from './Detalles'
 import { EventHistoricoForm } from './FormEH'
+import ErrorBoundary from '@/components/ErrorBoundary';
+import { apiService } from "@/services/apiService";
+import { useAtom } from "jotai"
+import { eventohistoricoAtom } from '@/context/context'
+import { toast } from "sonner";
 
 export const TabEHist = () => {
+
+  const [eventohistorico] = useAtom(eventohistoricoAtom)
+
+  const handleUpdate = async (data:any) => {
+    console.log("Formulario enviado:", data)
+    let id_ubicacion = eventohistorico?.ubicacion.id
+    if(eventohistorico?.ubicacion.latitud != data.ubicacion.latitud || eventohistorico?.ubicacion.longitud != data.ubicacion.longitud){
+      await apiService.post(`ubicaciones`, {
+        nombre: data.ubicacion.nombre,
+        latitud: data.ubicacion.latitud,
+        longitud: data.ubicacion.longitud,
+        descripcion: data.ubicacion.descripcion,
+        imagen: data.ubicacion.imagen,
+      })
+      .then((response) => {console.log(response); toast.success("Ubicación creada correctamente")          
+          id_ubicacion = response.data;
+      })
+      .catch((error) => {console.log(error)});
+    }
+    else{
+      await apiService.put(`ubicaciones/${data.ubicacion.id}`, data.ubicacion)
+    .then((response) => {console.log(response);
+      toast.success("Ubicación actualizada correctamente")
+    })
+    .catch((error) => {console.log(error)});
+    }
+    await apiService.put(`eventos_historicos/${data.id}`, {
+      nombre: data.nombre,
+      fecha_inicio: data.fecha_inicio,
+      fecha_fin: data.fecha_fin,
+      id_ubicacion: id_ubicacion,
+      descripcion: data.descripcion,
+      tipo: data.tipo
+    })
+    .then((response) => {console.log(response)
+      toast.success("Evento actualizado correctamente")
+    })
+    .catch((error) => {console.log(error)});
+  }
+
+
+
   return (
     <Tabs defaultValue="detalles" className="w-full h-full flex flex-col">
       <TabsList className="grid grid-cols-3 w-full bg-gray-100 p-1 rounded-lg">
@@ -49,11 +96,13 @@ export const TabEHist = () => {
         <TabsContent value="editar" className="focus-visible:outline-none h-full">
           <EventHistoricoForm
             mode="edit"
-            onSubmit={() => {}}
+            onSubmit={handleUpdate}
           />
         </TabsContent>
         <TabsContent value="multimedia" className="focus-visible:outline-none h-full">
-          <Multimedia />
+        <ErrorBoundary>
+    <Multimedia />
+  </ErrorBoundary>
         </TabsContent>
       </div>
     </Tabs>

@@ -17,6 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { DialogCrear } from "./DialogCrear"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useEffect, useState } from "react"
@@ -25,8 +26,9 @@ import { apiService } from "@/services/apiService"
 import { EventHistorico } from "@/components/interface/eventohistorico"
 import { toast } from "sonner"
 import { DialogDetalles } from "./DialogDetalles"
-import { eventohistoricoAtom } from "@/context/context"
 import useLocalStorage from "@/hooks/useLocalStorage"
+
+
 
 export const EventManagement = () => {
   const [sorting, setSorting] = useState<SortingState>([])
@@ -37,6 +39,7 @@ export const EventManagement = () => {
   const [globalFilter, setGlobalFilter] = useState('')
 
   const [open, setOpen] = useState(false)
+  const [openCrear, setOpenCrear] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<EventHistorico | null>(null)
 
   const [eve,setEve] = useLocalStorage<EventHistorico[]>('evento_historico', [])
@@ -100,19 +103,20 @@ export const EventManagement = () => {
 
   const fetchEventos = async () => {
     setEvents(eve)
+    setLoading(true)
+    await apiService.get('eventos_historicos/?skip=0&limit=100').then((response) => {
+      
+     console.log(response)
+    setEvents(response.data as EventHistorico[])
+    setEve(response.data as EventHistorico[])
+    }).catch((error) => {
+    console.error(error)
+    toast.error('Error al cargar eventos históricos')
+  }).finally(() => {
+    setLoading(false)
+  })
     if(eve.length === 0){
-      setLoading(true)
-      await apiService.get('eventos_historicos/?skip=0&limit=100').then((response) => {
-        
-       console.log(response)
-      setEvents(response.data as EventHistorico[])
-      setEve(response.data as EventHistorico[])
-      }).catch((error) => {
-      console.error(error)
-      toast.error('Error al cargar eventos históricos')
-    }).finally(() => {
-      setLoading(false)
-    })
+     
     }
     else{
       setEvents(eve)
@@ -162,7 +166,9 @@ export const EventManagement = () => {
             <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             Actualizar
           </Button>
-          <Button>
+          <Button
+            onClick={() => setOpenCrear(true)}
+          >
             <Plus className="mr-2 h-4 w-4" />
             Agregar Evento
           </Button>
@@ -248,6 +254,9 @@ export const EventManagement = () => {
       </div>
       {open && (
         <DialogDetalles open={open} onOpenChange={setOpen} evento={selectedEvent ?? undefined} />
+      )}
+      {openCrear && (
+        <DialogCrear open={openCrear} onOpenChange={setOpenCrear}/>
       )}
     </div>
   )

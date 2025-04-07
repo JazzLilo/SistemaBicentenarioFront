@@ -129,7 +129,6 @@ export const EventHistoricoForm = ({
     );
   };
 
-  // Función para convertir fecha ISO a formato yyyy-MM-dd
   const formatDateForInput = (isoDate: string) => {
     if (!isoDate) return '';
     return isoDate.split('T')[0];
