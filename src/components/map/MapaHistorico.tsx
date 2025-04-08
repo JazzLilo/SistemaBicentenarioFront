@@ -75,10 +75,9 @@ export const MapaHistorico = () => {
   const categories = [...new Set(historias.map(h => h.tipo))]
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)]">
+    <div className="flex flex-col h-[calc(85vh)]">
 
       <div className="bg-white shadow-sm p-4 flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Mapa Histórico</h2>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => setShowFilters(!showFilters)}>
             {showFilters ? 'Ocultar filtros' : 'Mostrar filtros'}

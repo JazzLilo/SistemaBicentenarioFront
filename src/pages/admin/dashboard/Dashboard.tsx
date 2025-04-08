@@ -13,7 +13,7 @@ import { CommentModeration } from './CommentModeration'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 export const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState<'users' | 'dashboard' | 'events' | 'history' | 'cultura'| 'presidentes' |'library' | 'comments' | 'statistics' | 'news'>('dashboard')
+  const [activeTab, setActiveTab] = useState<'users' | 'dashboard' | 'events' | 'history' | 'library' | 'comments' | 'statistics' | 'news' | 'cultura' | 'presidentes'>('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const isDesktop = useMediaQuery('(min-width: 768px)')
 

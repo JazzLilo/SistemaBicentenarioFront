@@ -1,10 +1,5 @@
-import Inicio from './sections/Inicio';
-import Historia from './sections/Historia';
-import Videos from './sections/Videos';
-import Eventos from './sections/Eventos';
-import Festividades from './sections/Festividades';
-import Patrimonio from './sections/Patrimonio';
-import { Presidentes } from './sections/Presidentes';
+import { Historia, Presidentes, Patrimonio, Festividades, Videos, TimeLine, Mapa, Inicio, CulturaMap } from './sections'
+
 interface MainContentProps {
   activeSection: string;
 }
@@ -14,11 +9,13 @@ function MainContent({ activeSection }: MainContentProps) {
     <div className="dashboard-content">
       {activeSection === 'inicio' && <Inicio />}
       {activeSection === 'historia' && <Historia />}
+      {activeSection === 'linea-tiempo' && <TimeLine />}
+      {activeSection === 'mapa' && <Mapa />}
       {activeSection === 'videos' && <Videos />}
-      {activeSection === 'musica' && <Eventos />}
       {activeSection === 'festividades' && <Festividades />}
       {activeSection === 'patrimonio' && <Patrimonio />}
       {activeSection === 'presidentes' && <Presidentes />}
+      {activeSection === 'cultura' && <CulturaMap />}
     </div>
   );
 }

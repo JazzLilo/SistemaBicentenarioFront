@@ -1,0 +1,10 @@
+export { default as CulturaMap} from './CulturaMap';
+export * from './Eventos';
+export * from './Festividades';
+export * from './Historia';
+export * from './Inicio';
+export * from './Mapa';
+export * from './Patrimonio';
+export * from './Presidentes';
+export * from './TimeLine';
+export * from './Videos';

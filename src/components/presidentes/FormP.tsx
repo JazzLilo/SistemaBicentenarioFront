@@ -6,7 +6,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -125,9 +124,6 @@ export const FormP = ({ mode, onSubmit }: FormPProps) => {
     <form onSubmit={handleSubmit} className="">
       <Card>
         <CardHeader>
-          <CardTitle>
-            {isEdit ? "Editar Presidente" : "Crear Nuevo Presidente"}
-          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Nombre y Apellido */}

@@ -19,6 +19,11 @@ export const DialogCrear = ({ open, onOpenChange }: DialogProps) => {
 
     const [, setPresidente] = useAtom(presidenteAtom)
 
+    useEffect(() => {
+        setPresidente(undefined)
+    }, [open])
+
+
     const handleSubmit = async (data: any) => {
         console.log("Formulario enviado:", data)
         /*
@@ -42,7 +47,8 @@ export const DialogCrear = ({ open, onOpenChange }: DialogProps) => {
             politicas_clave: data.politicas_clave
         }).then((res) => {
             console.log(res.data)
-            setPresidente(res.data)
+            const data:any = res.data
+            setPresidente(data)
             toast.success("Presidente creado correctamente")
             onOpenChange(false)
         }).catch((err) => {
@@ -58,7 +64,7 @@ export const DialogCrear = ({ open, onOpenChange }: DialogProps) => {
                 <div className="flex flex-col h-full">
                     <DialogHeader className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6">
                         <DialogTitle className="text-2xl font-bold">
-                            Crear un Nuevo Evento Histórico
+                            Agregar un nuevo Presidente
                         </DialogTitle>
                     </DialogHeader>
 

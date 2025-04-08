@@ -23,7 +23,7 @@ export const TabEHist = () => {
         descripcion: data.ubicacion.descripcion,
         imagen: data.ubicacion.imagen,
       })
-      .then((response) => {console.log(response); toast.success("Ubicación creada correctamente")          
+      .then((response) => {console.log(response);          
           id_ubicacion = response.data as any;
       })
       .catch((error) => {console.log(error)});
@@ -31,7 +31,6 @@ export const TabEHist = () => {
     else{
       await apiService.put(`ubicaciones/${data.ubicacion.id}`, data.ubicacion)
     .then((response) => {console.log(response);
-      toast.success("Ubicación actualizada correctamente")
     })
     .catch((error) => {console.log(error)});
     }

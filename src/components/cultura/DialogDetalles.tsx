@@ -32,10 +32,10 @@ export const DialogDetalles = ({ open, onOpenChange, evento }: DialogProps) => {
                 <div className="flex flex-col h-full">
                     <DialogHeader className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6">
                         <DialogTitle className="text-2xl font-bold">
-                            Detalles y Edición
+                            Detalles de Cultura
                         </DialogTitle>
                         <DialogDescription className="text-blue-100">
-                            Información completa y opciones de gestión
+                            Información completa y edición de la cultura seleccionada.
                         </DialogDescription>
                     </DialogHeader>
 

@@ -21,7 +21,7 @@ function CheckEmail() {
       
       if (response.success) {
         localStorage.setItem('email', email);
-        navigate(PublicRoutes.Register);
+        navigate(PublicRoutes.VerifyCode);
       } else {
         setError(response.message || 'Error al enviar el código');
       }

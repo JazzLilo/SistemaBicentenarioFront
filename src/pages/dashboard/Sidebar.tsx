@@ -1,14 +1,23 @@
-import { FaHome, FaBook, FaVideo, FaMusic, FaCalendarAlt, FaLandmark } from 'react-icons/fa';
+import { useState } from 'react';
+import { FaHome, FaBook, FaVideo, FaCalendarAlt, FaLandmark, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import bandera from '@/assets/bandera.jpg';
+
+
 
 interface SidebarProps {
   sidebarOpen: boolean;
   toggleSidebar: () => void;
   activeSection: string;
-  navigateToSection: (section: string) => void;
+  navigateToSection: (section: string, subSection?: string) => void;
 }
 
 function Sidebar({ sidebarOpen, toggleSidebar, activeSection, navigateToSection }: SidebarProps) {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const isEventosActive = activeSection === 'linea-tiempo' || 
+                         activeSection === 'mapa' || 
+                         activeSection === 'historia';
+
   return (
     <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
       <div className="sidebar-header">
@@ -26,26 +35,67 @@ function Sidebar({ sidebarOpen, toggleSidebar, activeSection, navigateToSection 
         >
           <FaHome /> Inicio
         </button>
+        
         <button
-          className={`nav-item ${activeSection === 'videos' ? 'active' : ''}`}
-          onClick={() => navigateToSection('videos')}
+          className={`nav-item ${activeSection === 'cultura' ? 'active' : ''}`}
+          onClick={() => navigateToSection('cultura')}
         >
           <FaVideo /> Cultura
         </button>
-        <button
-          className={`nav-item ${activeSection === 'musica' ? 'active' : ''}`}
-          onClick={() => navigateToSection('musica')}
-        >
-          <FaBook /> Eventos Historicos
-        </button>
+        
+        {/* Dropdown para Eventos Históricos */}
+        <div className="dropdown-container">
+          <button
+            className={`nav-item dropdown-toggle ${isEventosActive ? 'active' : ''}`}
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+          >
+            <FaBook /> 
+            <span>Eventos Históricos</span>
+            {dropdownOpen ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
+          </button>
+          
+          {dropdownOpen && (
+            <div className="dropdown-menu">
+              <button
+                className={`dropdown-item ${activeSection === 'linea-tiempo' ? 'active' : ''}`}
+                onClick={() => {
+                  navigateToSection('linea-tiempo');
+                  setDropdownOpen(false);
+                }}
+              >
+                Línea de Tiempo
+              </button>
+              <button
+                className={`dropdown-item ${activeSection === 'mapa' ? 'active' : ''}`}
+                onClick={() => {
+                  navigateToSection('mapa');
+                  setDropdownOpen(false);
+                }}
+              >
+                Mapa Histórico
+              </button>
+              <button
+                className={`dropdown-item ${activeSection === 'historia' ? 'active' : ''}`}
+                onClick={() => {
+                  navigateToSection('historia');
+                  setDropdownOpen(false);
+                }}
+              >
+                Historia
+              </button>
+            </div>
+          )}
+        </div>
+        
         <button
           className={`nav-item ${activeSection === 'festividades' ? 'active' : ''}`}
           onClick={() => navigateToSection('festividades')}
         >
           <FaCalendarAlt /> Agenda
         </button>
+        
         <button
-          className={`nav-item ${activeSection === 'patrimonio' ? 'active' : ''}`}
+          className={`nav-item ${activeSection === 'presidentes' ? 'active' : ''}`}
           onClick={() => navigateToSection('presidentes')}
         >
           <FaLandmark /> Presidentes

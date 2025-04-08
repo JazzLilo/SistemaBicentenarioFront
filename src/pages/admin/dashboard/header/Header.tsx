@@ -9,7 +9,9 @@ const titles = {
   history: 'Gestión de Historia',
   library: 'Gestión de Biblioteca',
   comments: 'Moderación de Comentarios',
-  statistics: 'Estadísticas y Análisis'
+  statistics: 'Estadísticas y Análisis',
+  presidentes: 'Gestión de Presidentes',
+  cultura: 'Gestión de Culturas',
 }
 
 export const Header = ({ activeTab, onMenuClick }:

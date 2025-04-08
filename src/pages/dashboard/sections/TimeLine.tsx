@@ -7,7 +7,7 @@ import { useAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
 import { eventohistoricoAtom } from "@/context/context";
 
-function TimeLine() {
+export function TimeLine() {
   const navigate = useNavigate();
   const [historias, setHistorias] = useState<EventHistorico[]>([]);
   const [activeEvent, setActiveEvent] = useState<EventHistorico | null>(null);
@@ -101,7 +101,6 @@ function TimeLine() {
 
       <div className="container mx-auto px-4 py-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold">Línea de Tiempo</h2>
           <div className="flex gap-2">
             <button
               onClick={() => setAutoPlay(!autoPlay)}
@@ -276,4 +275,3 @@ function TimeLine() {
   );
 }
 
-export default TimeLine;

@@ -1,4 +1,4 @@
-function Festividades() {
+export function Festividades() {
     return (
       <>
         <header className="cultural-header">
@@ -44,4 +44,4 @@ function Festividades() {
     );
   }
   
-  export default Festividades;
+ 

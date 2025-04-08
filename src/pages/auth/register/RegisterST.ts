@@ -1,6 +1,14 @@
 import styled from 'styled-components';
 
 export const RegisterContainer = styled.div`
+  .register-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 1.5rem;
+}
   .register-wrapper {
     display: flex;
     justify-content: center;

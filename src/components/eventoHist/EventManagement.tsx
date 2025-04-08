@@ -92,7 +92,18 @@ export const EventManagement = () => {
             }}>
               Ver
             </Button>
-            <Button variant="destructive" size="sm" onClick={() => console.log("Eliminar evento", row.original)}>
+            <Button variant="destructive" size="sm" onClick={() => {
+              console.log("Eliminar evento", row.original)
+               apiService.delete(`eventos_historicos/${row.original.id}/`).then(() => {
+                toast.success('Evento eliminado correctamente')
+                fetchEventos()
+              }
+                ).catch((error) => {
+                  console.error(error)
+                  toast.error('Error al eliminar evento')
+                }
+              )
+            }}>
               Eliminar
             </Button>
           </div>
@@ -102,7 +113,7 @@ export const EventManagement = () => {
   ]
 
   const fetchEventos = async () => {
-    setEvents(eve)
+    setEvents([])
     setLoading(true)
     await apiService.get('eventos_historicos/?skip=0&limit=100').then((response) => {
 

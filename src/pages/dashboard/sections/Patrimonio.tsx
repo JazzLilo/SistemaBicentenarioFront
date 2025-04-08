@@ -1,4 +1,4 @@
-function Patrimonio() {
+export function Patrimonio() {
     return (
       <>
         <header className="cultural-header">
@@ -41,4 +41,4 @@ function Patrimonio() {
     );
   }
   
-  export default Patrimonio;
+ 

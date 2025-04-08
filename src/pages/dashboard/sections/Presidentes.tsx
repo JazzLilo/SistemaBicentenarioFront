@@ -42,8 +42,11 @@ export const Presidentes = () => {
 
   return (
     <div className="p-6">
+      <header className='cultural-header'>
+        <h1 className="text-3xl font-bold">Presidentes</h1>
+        </header>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Presidentes Históricos</h1>
+        
         <Button onClick={fetchPresidentes} variant="outline">
           Actualizar lista
         </Button>

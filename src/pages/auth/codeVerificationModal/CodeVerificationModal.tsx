@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {ModalContainer} from '@/assets/css/ModalStyle';
-
+import { apiService } from '@/services/apiService';
+import { PublicRoutes } from '@/routes/routes';
 const CodeVerificationModal = ({ email, onClose }:{
     email: string;
     onClose: () => void;
@@ -45,13 +46,22 @@ const CodeVerificationModal = ({ email, onClose }:{
         e.preventDefault();
         setLoading(true);
         setError('');
-
-        // Modo de desarrollo: navegar directamente al registro
-        setTimeout(() => {
+        await apiService.post('users/verify_code', {
+            code: verificationCode,
+            email: email
+        }).then((response) => {
+            console.log(response);
+            navigate(`${PublicRoutes.Register}`);
+        }
+        ).catch((error) => {
             setLoading(false);
-            navigate(`/register?email=${encodeURIComponent(email)}`);
-        }, 1000); // Simulamos un tiempo de carga de 1 segundo
-
+            setError(error.data?.detail || 'Código de verificación incorrecto');
+        }
+        ).finally(() => {
+            setLoading(false);
+        });
+        // Modo de desarrollo: navegar directamente al registro
+    
         // Comentamos la llamada a la API para desarrollo
         /*
         try {

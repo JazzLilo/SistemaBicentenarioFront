@@ -1,546 +1,647 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { RegisterContainer } from './RegisterStyle';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { Input } from "@/components/ui/input";
+import { useState, useEffect } from 'react';
+import { Link,  useNavigate } from 'react-router-dom';
 import { apiService } from '@/services/apiService';
-import { PublicRoutes } from '@/routes/routes';
-interface Country {
-    code: string;
-    name: string;
-}
-
-interface FormData {
-    nombre: string;
-    apellidoPaterno: string;
-    apellidoMaterno: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-    phone: string;
-    gender: string;
-    country: string;
-    countryName: string;
-    city: string;
-    cityName: string;
-    code: string;
-}
-
+import axios from 'axios';
+import './style.css'
+import { PrivateRoutes } from '@/routes/routes';
 const Register = () => {
     const navigate = useNavigate();
-    const email = localStorage.getItem('email');
-
-    const [formData, setFormData] = useState<FormData>({
-        nombre: '',
-        apellidoPaterno: '',
-        apellidoMaterno: '',
-        email: email || '',
+    const emailFromQuery = localStorage.getItem('email');
+    // Estado para países y ciudades
+    const [countries, setCountries] = useState([]);
+    const [cities, setCities] = useState([]);
+    const [filteredCountries, setFilteredCountries] = useState<any>([]);
+    const [countrySearchTerm, setCountrySearchTerm] = useState('');
+    const [citySearchTerm, setCitySearchTerm] = useState('');
+    const [filteredCities, setFilteredCities] = useState([]);
+    const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+    const [showCityDropdown, setShowCityDropdown] = useState(false);
+    const [loadingCities, setLoadingCities] = useState(false);
+    
+    const [formData, setFormData] = useState({
+        fullName: '',
+        email: emailFromQuery || '',
         password: '',
         confirmPassword: '',
         phone: '',
         gender: '',
         country: '',
-        countryName: '',
+        countryName: '', // Nombre mostrado del país seleccionado
         city: '',
-        cityName: '',
-        code: ''
+        cityName: '', // Nombre mostrado de la ciudad seleccionada
+        code: '' // Este es el código de verificación que requiere tu backend
     });
-
-    const [countries, setCountries] = useState<Country[]>([]);
-    const [cities, setCities] = useState<string[]>([]);
-    const [loading, setLoading] = useState({
-        countries: false,
-        cities: false,
-        form: false
-    });
-    const [error, setError] = useState('');
-    const [passwordVisibility, setPasswordVisibility] = useState({
-        password: false,
-        confirmPassword: false
-    });
+    
+    const [loading, setLoading] = useState(false);
+    const [, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [passwordStrength, setPasswordStrength] = useState({
         score: 0,
-        requirements: {
-            length: false,
-            uppercase: false,
-            lowercase: false,
-            number: false,
-            special: false
-        }
+        hasCaps: false,
+        hasLower: false,
+        hasNumber: false,
+        hasSpecial: false,
+        hasMinLength: false,
+        message: '',
+        color: ''
     });
-    const [countrySearchTerm, setCountrySearchTerm] = useState('');
-    const [filteredCountries, setFilteredCountries] = useState<Country[]>([]);
+    const [passwordsMatch, setPasswordsMatch] = useState(true);
+
+    // Cargar la lista de países al iniciar
+    useEffect(() => {
+        const fetchCountries = async () => {
+            try {
+                const response = await axios.get('https://countriesnow.space/api/v0.1/countries');
+                if (response.data && response.data.data && Array.isArray(response.data.data)) {
+                    // Transformar los datos para que tengan el formato esperado
+                    const formattedCountries = response.data.data.map((country:any, index:any) => ({
+                        code: country.iso2 || `country-${index}`, // Usar ISO si está disponible o generar un código
+                        name: country.country
+                    }));
+                    setCountries(formattedCountries);
+                    setFilteredCountries(formattedCountries);
+                }
+            } catch (error) {
+                console.error("Error al cargar países:", error);
+                setError("No se pudieron cargar los países. Por favor, intente más tarde.");
+            }
+        };
+
+        fetchCountries();
+    }, []);
 
     useEffect(() => {
+        // Si no hay email o código en la URL, redirigir a la página de verificación
+       
+    }, []);
+
+    // Filtrar países cuando cambie el término de búsqueda
+    useEffect(() => {
         if (countrySearchTerm) {
-            setFilteredCountries(
-                countries.filter(country =>
-                    country.name.toLowerCase().includes(countrySearchTerm.toLowerCase())
-                )
+            const filtered : any = countries.filter((country:any) => 
+                country.name.toLowerCase().includes(countrySearchTerm.toLowerCase())
             );
+            setFilteredCountries(filtered);
         } else {
             setFilteredCountries(countries);
         }
     }, [countrySearchTerm, countries]);
 
-    const [citySearchTerm, setCitySearchTerm] = useState('');
-    const [filteredCities, setFilteredCities] = useState<string[]>([]);
-
+    // Filtrar ciudades cuando cambie el término de búsqueda
     useEffect(() => {
-        if (citySearchTerm) {
-            setFilteredCities(
-                cities.filter(city =>
-                    city.toLowerCase().includes(citySearchTerm.toLowerCase())
-                )
+        if (citySearchTerm && cities.length > 0) {
+            const filtered = cities.filter((city:any) => 
+                city.toLowerCase().includes(citySearchTerm.toLowerCase())
             );
+            setFilteredCities(filtered);
         } else {
             setFilteredCities(cities);
         }
     }, [citySearchTerm, cities]);
 
-
-    const fetchCountries = useCallback(async () => {
-        setLoading(prev => ({ ...prev, countries: true }));
-        try {
-            const response = await axios.get('https://countriesnow.space/api/v0.1/countries');
-            if (response.data?.data) {
-                const formattedCountries = response.data.data.map((country: any) => ({
-                    code: country.iso2 || country.country,
-                    name: country.country
-                }));
-                setCountries(formattedCountries);
+    // Cargar ciudades cuando cambie el país seleccionado
+    useEffect(() => {
+        const fetchCities = async () => {
+            if (formData.countryName) {
+                setLoadingCities(true);
+                try {
+                    const response = await axios.post(
+                        'https://countriesnow.space/api/v0.1/countries/cities',
+                        { country: formData.countryName }
+                    );
+                    
+                    if (response.data && response.data.data && Array.isArray(response.data.data)) {
+                        setCities(response.data.data);
+                        setFilteredCities(response.data.data);
+                    } else {
+                        setCities([]);
+                        setFilteredCities([]);
+                    }
+                } catch (error) {
+                    console.error("Error al cargar ciudades:", error);
+                    setCities([]);
+                    setFilteredCities([]);
+                } finally {
+                    setLoadingCities(false);
+                }
+                
+                // Si el país seleccionado cambia, limpiar la ciudad seleccionada
+                if (formData.city) {
+                    setFormData(prev => ({
+                        ...prev,
+                        city: '',
+                        cityName: ''
+                    }));
+                }
             }
-        } catch (error) {
-            console.error("Error loading countries:", error);
-            setError("No se pudieron cargar los países. Intente más tarde.");
-        } finally {
-            setLoading(prev => ({ ...prev, countries: false }));
-        }
-    }, []);
+        };
 
-    const fetchCities = useCallback(async (countryName: string) => {
-        if (!countryName) return;
-
-        setLoading(prev => ({ ...prev, cities: true }));
-        try {
-            const response = await axios.post(
-                'https://countriesnow.space/api/v0.1/countries/cities',
-                { country: countryName }
-            );
-            setCities(response.data?.data || []);
-        } catch (error) {
-            console.error("Error loading cities:", error);
-            setCities([]);
-        } finally {
-            setLoading(prev => ({ ...prev, cities: false }));
-        }
-    }, []);
-
-    useEffect(() => {
-        fetchCountries();
-    }, [fetchCountries]);
-
-    useEffect(() => {
         if (formData.countryName) {
-            fetchCities(formData.countryName);
+            fetchCities();
+        } else {
+            setCities([]);
+            setFilteredCities([]);
         }
-    }, [formData.countryName, fetchCities]);
+    }, [formData.countryName]);
 
+    // Evaluar la fortaleza de la contraseña
     useEffect(() => {
-        const { password } = formData;
-        if (!password) {
+        if (!formData.password) {
             setPasswordStrength({
                 score: 0,
-                requirements: {
-                    length: false,
-                    uppercase: false,
-                    lowercase: false,
-                    number: false,
-                    special: false
-                }
+                hasCaps: false,
+                hasLower: false,
+                hasNumber: false,
+                hasSpecial: false,
+                hasMinLength: false,
+                message: '',
+                color: ''
             });
             return;
         }
 
-        const requirements = {
-            length: password.length >= 8,
-            uppercase: /[A-Z]/.test(password),
-            lowercase: /[a-z]/.test(password),
-            number: /[0-9]/.test(password),
-            special: /[^A-Za-z0-9]/.test(password)
-        };
+        const hasCaps = /[A-Z]/.test(formData.password);
+        const hasLower = /[a-z]/.test(formData.password);
+        const hasNumber = /[0-9]/.test(formData.password);
+        const hasSpecial = /[^A-Za-z0-9]/.test(formData.password);
+        const hasMinLength = formData.password.length >= 8;
 
-        const score = Object.values(requirements).filter(Boolean).length;
+        let score = 0;
+        if (hasCaps) score += 1;
+        if (hasLower) score += 1;
+        if (hasNumber) score += 1;
+        if (hasSpecial) score += 1;
+        if (hasMinLength) score += 1;
+
+        let message = '';
+        let color = '';
+
+        if (score === 0) {
+            message = 'Muy débil';
+            color = '#ff4d4d';
+        } else if (score === 1) {
+            message = 'Débil';
+            color = '#ff4d4d';
+        } else if (score === 2) {
+            message = 'Regular';
+            color = '#ffa64d';
+        } else if (score === 3) {
+            message = 'Buena';
+            color = '#ffff4d';
+        } else if (score === 4) {
+            message = 'Fuerte';
+            color = '#4dff4d';
+        } else {
+            message = 'Muy fuerte';
+            color = '#4dff4d';
+        }
 
         setPasswordStrength({
             score,
-            requirements
+            hasCaps,
+            hasLower,
+            hasNumber,
+            hasSpecial,
+            hasMinLength,
+            message,
+            color
         });
     }, [formData.password]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    // Verificar si las contraseñas coinciden en tiempo real
+    useEffect(() => {
+        if (formData.confirmPassword) {
+            setPasswordsMatch(formData.password === formData.confirmPassword);
+        } else {
+            setPasswordsMatch(true);
+        }
+    }, [formData.password, formData.confirmPassword]);
+
+    const handleChange = (e:any) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData({
+            ...formData,
+            [name]: value
+        });
         setError('');
     };
 
-    const handleCountrySelect = (country: Country) => {
-        setFormData(prev => ({
-            ...prev,
-            country: country.code,
-            countryName: country.name,
+    const handleCountrySearch = (e:any) => {
+        setCountrySearchTerm(e.target.value);
+        // Mostrar el dropdown cuando se comienza a escribir
+        setShowCountryDropdown(true);
+    };
+
+    const handleCitySearch = (e:any) => {
+        setCitySearchTerm(e.target.value);
+        // Mostrar el dropdown cuando se comienza a escribir
+        setShowCityDropdown(true);
+    };
+
+    const selectCountry = (code:any, name:any) => {
+        setFormData({
+            ...formData,
+            country: code,
+            countryName: name,
             city: '',
             cityName: ''
-        }));
-        setCountrySearchTerm(''); 
+        });
+        setCountrySearchTerm('');
+        setShowCountryDropdown(false);
     };
 
-    const handleCitySelect = (city: string) => {
-        setFormData(prev => ({
-            ...prev,
-            city,
-            cityName: city
-        }));
-        setCitySearchTerm(''); 
+    const selectCity = (cityName:any) => {
+        setFormData({
+            ...formData,
+            city: cityName, // La ciudad ahora se guarda directamente por nombre
+            cityName: cityName
+        });
+        setCitySearchTerm('');
+        setShowCityDropdown(false);
     };
 
-    const togglePasswordVisibility = (field: 'password' | 'confirmPassword') => {
-        setPasswordVisibility(prev => ({
-            ...prev,
-            [field]: !prev[field]
-        }));
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e:any) => {
         e.preventDefault();
-        setLoading(prev => ({ ...prev, form: true }));
+        setLoading(true);
         setError('');
 
         if (formData.password !== formData.confirmPassword) {
             setError('Las contraseñas no coinciden');
-            setLoading(prev => ({ ...prev, form: false }));
+            setLoading(false);
             return;
         }
 
         if (!formData.country || !formData.city) {
             setError('Por favor selecciona un país y una ciudad');
-            setLoading(prev => ({ ...prev, form: false }));
+            setLoading(false);
             return;
         }
 
-        try {
-            const registerData = {
-                nombre: formData.nombre,
-                apellidoPaterno: formData.apellidoPaterno,
-                apellidoMaterno: formData.apellidoMaterno,
-                correo: formData.email,
-                contrasena: formData.password,
-                telefono: formData.phone,
-                genero: formData.gender,
-                pais: formData.countryName,
-                ciudad: formData.cityName,
-                imagen: "strgin"
-            };
-
-            apiService.post('users/', registerData)
-                .then((response) => {
-                    if (response.success) {
-                        navigate(PublicRoutes.VerifyCode);
-                    }
-                }
-            );
-
-            
-        } catch (err: any) {
-            console.error("Registration error:", err);
-            setError(err.response?.data?.detail || err.message || 'Error al registrar. Verifica tus datos.');
-        } finally {
-            setLoading(prev => ({ ...prev, form: false }));
+        // Validar formato de teléfono
+        const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+        if (!phoneRegex.test(formData.phone)) {
+            setError('El formato del teléfono es incorrecto. Debe contener de 6-14 dígitos');
+            setLoading(false);
+            return;
         }
+
+       
+            // Mapear los valores del género al formato esperado por el backend
+            const genderMapping = {
+                'male': 'M',
+                'female': 'F',
+                'prefer_not_to_say': 'Other'
+            } as any;
+
+            // Usar el servicio correcto para completar el registro
+            const registerData = {
+                email: formData.email,
+                code: formData.code,
+                fullName: formData.fullName,
+                password: formData.password,
+                phone: formData.phone,
+                gender: genderMapping[formData.gender] || 'Other' , // Convertir al formato esperado
+                country: formData.countryName, // Enviar el nombre del país en lugar del código
+                city: formData.cityName // Enviar el nombre de la ciudad
+            };
+          
+            console.log("Datos de registro:", registerData); // Para depuración
+            
+            await apiService.post('users',{
+                nombre :formData.fullName.split(' ')[0],
+                apellidoPaterno : formData.fullName.split(' ')[1] || '' ,
+                apellidoMaterno : formData.fullName.split(' ')[2] || '',
+                correo : formData.email,
+                telefono : formData.phone,
+                pais : formData.countryName,
+                ciudad : formData.cityName,
+                genero: formData.gender,
+                imagen : '',
+                contrasena : formData.password,
+            }).then((response) => {
+                console.log(response);
+                // Redirigir al usuario a la página de inicio de sesión o donde sea necesario
+                localStorage.setItem('user', JSON.stringify({
+                    correo: formData.email,
+                    nombre: formData.fullName.split(' ')[0],
+                }));
+                navigate(`${PrivateRoutes.Dashboard}`);
+            }
+            ).catch((error) => {
+                console.error("Error al registrar usuario:", error);
+                setError(error.data?.detail || 'Error al registrar usuario. Por favor, inténtelo más tarde.');
+            });
+            
+        
+            
+            setLoading(false);
+        
     };
 
-    // Renderizado optimizado
-    const renderPasswordStrength = () => {
-        const strengthColors = ['#ff4d4d', '#ff4d4d', '#ffa64d', '#4dff4d', '#4dff4d'];
-        const strengthMessages = ['Muy débil', 'Débil', 'Regular', 'Fuerte', 'Muy fuerte'];
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
-        return (
-            <div className="password-strength">
-                <div className="strength-meter">
-                    <div
-                        className="meter-bar"
-                        style={{
-                            width: `${(passwordStrength.score / 5) * 100}%`,
-                            backgroundColor: strengthColors[passwordStrength.score]
-                        }}
-                    />
-                </div>
-                <div className="strength-message" style={{ color: strengthColors[passwordStrength.score] }}>
-                    {strengthMessages[passwordStrength.score]}
-                </div>
-                <div className="password-requirements">
-                    <ul>
-                        {Object.entries(passwordStrength.requirements).map(([key, met]) => (
-                            <li key={key} className={met ? 'met' : 'not-met'}>
-                                {key === 'length' && 'Mínimo 8 caracteres'}
-                                {key === 'uppercase' && 'Al menos una mayúscula'}
-                                {key === 'lowercase' && 'Al menos una minúscula'}
-                                {key === 'number' && 'Al menos un número'}
-                                {key === 'special' && 'Al menos un símbolo especial'}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </div>
-        );
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
     };
 
     return (
-        <RegisterContainer>
-            <div className="register-wrapper">
-                <div className="register-box">
-                    <div className="register-header">
-                        <h1>Crear Cuenta</h1>
-                        <p>Completa tus datos para registrarte</p>
-                    </div>
-
-                    <form onSubmit={handleSubmit} className="register-form">
-                        <div className="form-grid">
-                            {/* Nombre y Apellidos */}
-                            <div className="form-group">
-                                <label htmlFor="nombre">Nombre</label>
-                                <input
-                                    type="text"
-                                    id="nombre"
-                                    name="nombre"
-                                    value={formData.nombre}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="apellidoPaterno">Apellido Paterno</label>
-                                <input
-                                    type="text"
-                                    id="apellidoPaterno"
-                                    name="apellidoPaterno"
-                                    value={formData.apellidoPaterno}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="apellidoMaterno">Apellido Materno</label>
-                                <input
-                                    type="text"
-                                    id="apellidoMaterno"
-                                    name="apellidoMaterno"
-                                    value={formData.apellidoMaterno}
-                                    onChange={handleChange}
-                                />
-                            </div>
-
-                            {/* Email y Contraseñas */}
-                            <div className="form-group">
-                                <label htmlFor="email">Correo electrónico</label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    required
-                                    readOnly={!!email}
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="password">Contraseña</label>
-                                <div className="password-input">
-                                    <input
-                                        type={passwordVisibility.password ? "text" : "password"}
-                                        id="password"
-                                        name="password"
-                                        value={formData.password}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => togglePasswordVisibility('password')}
-                                    >
-                                        {passwordVisibility.password ? '👁️' : '👁️‍🗨️'}
-                                    </button>
-                                </div>
-                                {formData.password && renderPasswordStrength()}
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="confirmPassword">Confirmar Contraseña</label>
-                                <div className="password-input">
-                                    <input
-                                        type={passwordVisibility.confirmPassword ? "text" : "password"}
-                                        id="confirmPassword"
-                                        name="confirmPassword"
-                                        value={formData.confirmPassword}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => togglePasswordVisibility('confirmPassword')}
-                                    >
-                                        {passwordVisibility.confirmPassword ? '👁️' : '👁️‍🗨️'}
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Información adicional */}
-                            <div className="form-group">
-                                <label htmlFor="phone">Teléfono</label>
-                                <input
-                                    type="tel"
-                                    id="phone"
-                                    name="phone"
-                                    value={formData.phone}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="gender">Género</label>
-                                <select
-                                    id="gender"
-                                    name="gender"
-                                    value={formData.gender}
-                                    onChange={handleChange}
-                                    required
-                                >
-                                    <option value="">Selecciona...</option>
-                                    <option value="male">Masculino</option>
-                                    <option value="female">Femenino</option>
-                                    <option value="other">Otro</option>
-                                </select>
-                            </div>
-
-                            {/* País y Ciudad */}
-                            <div className="form-group">
-                                <label htmlFor="country">País</label>
-                                <Select                                                                    
-                                    value={formData.country}
-                                    onValueChange={(value) => {
-                                        const selectedCountry = countries.find(c => c.code === value);
-                                        if (selectedCountry) {
-                                            handleCountrySelect(selectedCountry);
-                                        }
-                                    }}
-                                >
-                                    <SelectTrigger className='w-full p-[0.75rem] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'>
-                                        <SelectValue placeholder="Selecciona un país" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {/* Campo de búsqueda */}
-                                        <div className="px-2 pb-2">
-                                            <Input
-                                                placeholder="Buscar país..."
-                                                value={countrySearchTerm}
-                                                onChange={(e) => setCountrySearchTerm(e.target.value)}
-                                                className="w-full"
-                                            />
-                                        </div>
-
-                                        {/* Lista de países filtrados */}
-                                        {filteredCountries.length > 0 ? (
-                                            filteredCountries.map((country) => (
-                                                <SelectItem key={country.code} value={country.code}>
-                                                    {country.name}
-                                                </SelectItem>
-                                            ))
-                                        ) : (
-                                            <div className="px-2 py-2 text-sm text-center text-gray-500">
-                                                No se encontraron países
-                                            </div>
-                                        )}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="city">Ciudad</label>
-                                <Select
-                                    value={formData.city}
-                                    onValueChange={(value) => handleCitySelect(value)}
-                                    disabled={!formData.country || loading.cities}
-                                >
-                                    <SelectTrigger className='w-full  border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'>
-                                        <SelectValue placeholder={
-                                            formData.country ?
-                                                (loading.cities ? "Cargando ciudades..." : "Selecciona una ciudad")
-                                                : "Primero selecciona un país"
-                                        } />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {/* Campo de búsqueda */}
-                                        <div className="px-2 pb-2">
-                                            <Input
-                                                placeholder="Buscar ciudad..."
-                                                value={citySearchTerm}
-                                                onChange={(e) => setCitySearchTerm(e.target.value)}
-                                                className="w-full"
-                                            />
-                                        </div>
-
-                                        {/* Lista de ciudades filtradas */}
-                                        {loading.cities ? (
-                                            <div className="px-2 py-2 text-sm text-center text-gray-500">
-                                                Cargando ciudades...
-                                            </div>
-                                        ) : filteredCities.length > 0 ? (
-                                            filteredCities.map((city) => (
-                                                <SelectItem key={city} value={city}>
-                                                    {city}
-                                                </SelectItem>
-                                            ))
-                                        ) : (
-                                            <div className="px-2 py-2 text-sm text-center text-gray-500">
-                                                {cities.length === 0
-                                                    ? "No hay ciudades disponibles para este país"
-                                                    : "No se encontraron resultados"}
-                                            </div>
-                                        )}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
+        <>
+           <div className='register-container'>
+           <div className="register-box">
+                <div className="register-header responsive-header">
+                    <h1>Crear Cuenta</h1>
+                    <p>Completa los datos para registrarte</p>
+                </div>
+                
+                <div className="form-container-with-scroll">
+                    <form onSubmit={handleSubmit} className="register-form responsive-form">
+                        <div className="form-group">
+                            <label htmlFor="fullName">Nombre completo</label>
+                            <input
+                                type="text"
+                                id="fullName"
+                                name="fullName"
+                                placeholder="Ingresa tu nombre completo"
+                                value={formData.fullName}
+                                onChange={handleChange}
+                                required
+                                autoComplete="name"
+                            />
                         </div>
 
-                        {error && <div className="error-message">{error}</div>}
+                        <div className="form-group">
+                            <label htmlFor="email">Correo electrónico</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="ejemplo@correo.com"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required
+                                autoComplete="email"
+                                readOnly={!!emailFromQuery} // Email será de solo lectura si viene verificado
+                            />
+                        </div>
+                        
+                        <div className="form-group">
+                            <label htmlFor="password">Contraseña</label>
+                            <div className="password-input-container">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    id="password"
+                                    name="password"
+                                    placeholder="Crea una contraseña segura"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    required
+                                    autoComplete="new-password"
+                                    minLength={8}
+                                    className={formData.password ? (passwordStrength.score >= 3 ? "valid-input" : "invalid-input") : ""}
+                                />
+                                <button 
+                                    type="button" 
+                                    className="toggle-password"
+                                    onClick={togglePasswordVisibility}
+                                >
+                                    {showPassword ? 
+                                        <span className="eye-icon">👁️</span> : 
+                                        <span className="eye-icon">👁️‍🗨️</span>
+                                    }
+                                </button>
+                            </div>
+                            {formData.password && (
+                                <div className="password-strength-container">
+                                    <div className="password-strength-meter">
+                                        <div 
+                                            className="password-strength-meter-bar" 
+                                            style={{ 
+                                                width: `${(passwordStrength.score / 5) * 100}%`,
+                                                backgroundColor: passwordStrength.color
+                                            }}
+                                        ></div>
+                                    </div>
+                                    <div className="password-strength-text" style={{ color: passwordStrength.color }}>
+                                        {passwordStrength.message}
+                                    </div>
+                                    <div className="password-requirements">
+                                        <p>La contraseña debe tener:</p>
+                                        <ul>
+                                            <li className={passwordStrength.hasMinLength ? "requirement-met" : "requirement-not-met"}>
+                                                Mínimo 8 caracteres
+                                            </li>
+                                            <li className={passwordStrength.hasCaps ? "requirement-met" : "requirement-not-met"}>
+                                                Al menos una mayúscula
+                                            </li>
+                                            <li className={passwordStrength.hasLower ? "requirement-met" : "requirement-not-met"}>
+                                                Al menos una minúscula
+                                            </li>
+                                            <li className={passwordStrength.hasNumber ? "requirement-met" : "requirement-not-met"}>
+                                                Al menos un número
+                                            </li>
+                                            <li className={passwordStrength.hasSpecial ? "requirement-met" : "requirement-not-met"}>
+                                                Al menos un símbolo especial
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
 
-                        <button
-                            type="submit"
-                            className="submit-button"
-                            disabled={loading.form}
+                        <div className="form-group">
+                            <label htmlFor="confirmPassword">Confirmar contraseña</label>
+                            <div className="password-input-container">
+                                <input
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    placeholder="Repite tu contraseña"
+                                    value={formData.confirmPassword}
+                                    onChange={handleChange}
+                                    required
+                                    autoComplete="new-password"
+                                    className={formData.confirmPassword ? (passwordsMatch ? "valid-input" : "invalid-input") : ""}
+                                />
+                                <button 
+                                    type="button" 
+                                    className="toggle-password"
+                                    onClick={toggleConfirmPasswordVisibility}
+                                >
+                                    {showConfirmPassword ? 
+                                        <span className="eye-icon">👁️</span> : 
+                                        <span className="eye-icon">👁️‍🗨️</span>
+                                    }
+                                </button>
+                            </div>
+                            {formData.confirmPassword && !passwordsMatch && (
+                                <div className="password-match-error">
+                                    Las contraseñas no coinciden
+                                </div>
+                            )}
+                        </div>
+                        
+                        <div className="form-group">
+                            <label htmlFor="phone">Teléfono/Celular</label>
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                placeholder="Ingrese su número"
+                                value={formData.phone}
+                                onChange={handleChange}
+                                required
+                                autoComplete="tel"
+                            />
+                            <small className="form-hint">Ingrese su número</small>
+                        </div>
+                        
+                        <div className="form-group">
+                            <label htmlFor="gender">Género</label>
+                            <select
+                                id="gender"
+                                name="gender"
+                                value={formData.gender}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Selecciona una opción</option>
+                                <option value="male">Masculino</option>
+                                <option value="female">Femenino</option>
+                                <option value="prefer_not_to_say">Prefiero no decirlo</option>
+                            </select>
+                        </div>
+                        
+                        <div className="form-group">
+                            <label htmlFor="country">País</label>
+                            <div className="dropdown-container">
+                                <input
+                                    type="text"
+                                    id="country"
+                                    placeholder="Buscar país"
+                                    value={formData.countryName || countrySearchTerm}
+                                    onChange={handleCountrySearch}
+                                    onFocus={() => setShowCountryDropdown(true)}
+                                    autoComplete="off"
+                                    className={formData.countryName ? "selected-value" : ""}
+                                />
+                                {showCountryDropdown && (
+                                    <div className="dropdown-list">
+                                        {filteredCountries.length > 0 ? (
+                                            filteredCountries.map((country: any) => (
+                                                <div 
+                                                    key={country.code} 
+                                                    className="dropdown-item"
+                                                    onClick={() => selectCountry(country.code, country.name)}
+                                                >
+                                                    {country.name}
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="dropdown-item no-results">No se encontraron países</div>
+                                        )}
+                                    </div>
+                                )}
+                                {formData.countryName && (
+                                    <button 
+                                        type="button" 
+                                        className="clear-selection"
+                                        onClick={() => {
+                                            setFormData({
+                                                ...formData,
+                                                country: '',
+                                                countryName: '',
+                                                city: '',
+                                                cityName: ''
+                                            });
+                                            setCountrySearchTerm('');
+                                        }}
+                                    >
+                                        ×
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                        
+                        <div className="form-group">
+                            <label htmlFor="city">Ciudad</label>
+                            <div className="dropdown-container">
+                                <input
+                                    type="text"
+                                    id="city"
+                                    placeholder={formData.country ? (loadingCities ? "Cargando ciudades..." : "Buscar ciudad") : "Primero selecciona un país"}
+                                    value={formData.cityName || citySearchTerm}
+                                    onChange={handleCitySearch}
+                                    onFocus={() => setShowCityDropdown(true)}
+                                    disabled={!formData.country || loadingCities}
+                                    autoComplete="off"
+                                    className={formData.cityName ? "selected-value" : ""}
+                                />
+                                {showCityDropdown && formData.country && (
+                                    <div className="dropdown-list">
+                                        {loadingCities ? (
+                                            <div className="dropdown-item loading">Cargando ciudades...</div>
+                                        ) : filteredCities.length > 0 ? (
+                                            filteredCities.map((city, index) => (
+                                                <div 
+                                                    key={`city-${index}`}
+                                                    className="dropdown-item"
+                                                    onClick={() => selectCity(city)}
+                                                >
+                                                    {city}
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="dropdown-item no-results">
+                                                {cities.length === 0 
+                                                    ? "No hay ciudades disponibles para este país" 
+                                                    : "No se encontraron ciudades"}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                                {formData.cityName && (
+                                    <button 
+                                        type="button" 
+                                        className="clear-selection"
+                                        onClick={() => {
+                                            setFormData({
+                                                ...formData,
+                                                city: '',
+                                                cityName: ''
+                                            });
+                                            setCitySearchTerm('');
+                                        }}
+                                    >
+                                        ×
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                    
+                        <button 
+                            type="submit" 
+                            className="register-button"
+                            disabled={loading}
                         >
-                            {loading.form ? 'Registrando...' : 'Crear Cuenta'}
+                            {loading ? 'Registrando...' : 'Crear cuenta'}
                         </button>
-                    </form>
 
-                    <div className="register-footer">
-                        <p>¿Ya tienes una cuenta? <Link to="/login">Inicia sesión</Link></p>
-                    </div>
+                        <div className="divider">
+                            <span>o</span>
+                        </div>
+                    </form>
+                </div>
+                
+                <div className="register-footer">
+                    <p>¿Ya tienes una cuenta? <Link to="/">Iniciar sesión</Link></p>
                 </div>
             </div>
-        </RegisterContainer>
+           </div>
+        </>
     );
 };
 

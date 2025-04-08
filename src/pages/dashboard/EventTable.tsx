@@ -2,7 +2,6 @@ import { flexRender, Table as TableType } from "@tanstack/react-table"
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
 import { EventHistorico } from "@/components/interface/eventohistorico"
 
 interface Props {
@@ -13,7 +12,7 @@ interface Props {
   onDelete: (evento: EventHistorico) => void
 }
 
-export const EventTable = ({ table, columnsLength, loading, onView, onDelete }: Props) => (
+export const EventTable = ({ table, columnsLength, loading}: Props) => (
   <div className="rounded-md border">
     <Table>
       <TableHeader>

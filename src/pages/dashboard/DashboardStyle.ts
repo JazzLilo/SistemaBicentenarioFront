@@ -424,6 +424,58 @@ export const DashboardContainer = styled.div`
     background: #fef2f2;
 }
 
+/* Estilos para el dropdown */
+.dropdown-container {
+  position: relative;
+}
+
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.dropdown-toggle span {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.dropdown-menu {
+  position: relative;
+  width: 100%;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.dropdown-item {
+  width: 100%;
+  padding: 8px 16px;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #333;
+}
+
+.dropdown-item:hover {
+  background-color: #e9ecef;
+}
+
+.dropdown-item.active {
+  background-color: #e9ecef;
+  font-weight: bold;
+}
+
+/* Ajustes para los iconos en los dropdown items */
+.dropdown-item svg {
+  margin-right: 8px;
+}
+
 /* Dashboard Content */
 .dashboard-content {
     padding: 2rem;

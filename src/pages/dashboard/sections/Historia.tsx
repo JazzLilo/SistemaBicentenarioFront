@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useAtom } from "jotai";
 import { eventohistoricoAtom } from "@/context/context";
 
-function Historia() {
+export const Historia = () => {
     const [eventos, setEventos] = useState<EventHistorico[]>([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -43,8 +43,8 @@ function Historia() {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8">   
-            <header className="mb-12 text-center">
+        <div className=" container mx-auto px-4 py-8">   
+            <header className="cultural-header mb-12 text-center">
                 <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
                     200 Años de Historia
                 </h1>
@@ -117,4 +117,3 @@ function Historia() {
     );
 }
 
-export default Historia;

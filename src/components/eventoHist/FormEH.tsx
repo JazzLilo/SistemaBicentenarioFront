@@ -62,7 +62,7 @@ export const EventHistoricoForm = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res:any = await apiService.get("categorias/?skip=0&limit=100");
+        const res: any = await apiService.get("categorias/?skip=0&limit=100");
         setCategorias(res.data);
 
         if (isEdit && eventAtom) {
@@ -74,7 +74,7 @@ export const EventHistoricoForm = ({
           if (eventAtom.ubicacion) {
             setUbicacionInfo({ ...eventAtom.ubicacion });
           }
-          console.log("Tipo",tipo)
+          console.log("Tipo", tipo)
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -84,7 +84,7 @@ export const EventHistoricoForm = ({
     };
 
     fetchData();
-  }, [isEdit]); 
+  }, [isEdit]);
 
   const findCategoriaByNombre = (nombre: string) => {
     return categorias.find(c =>
@@ -141,7 +141,7 @@ export const EventHistoricoForm = ({
     const file = e.target.files?.[0];
     if (file) {
       setImageFile(file);
-      
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -164,48 +164,48 @@ export const EventHistoricoForm = ({
     formData.append('file', file);
     formData.append('name', `${nombre}-${Date.now()}`);
     formData.append('tipo', 'evento_h');
-    
+
     try {
-      const uploadResponse:any = await apiService.postFiles('files/upload', formData);
-      return uploadResponse.data.file_url; 
+      const uploadResponse: any = await apiService.postFiles('files/upload', formData);
+      return uploadResponse.data.file_url;
     } catch (error) {
       console.error("Error uploading image:", error);
-      throw error; 
+      throw error;
     }
   };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-    
-      try {
-        let imagenUrl = ubicacionInfo.imagen;
-    
-        if (imageFile) {
-          imagenUrl = await uploadImage(imageFile);
-        }
-    
-        const ubicacionActualizada = {
-          ...ubicacionInfo,
-          imagen: imagenUrl
-        };
-    
-        const eventData: EventHistorico = {
-          id: isEdit && eventAtom ? eventAtom.id : Date.now(),
-          nombre,
-          descripcion,
-          fecha_inicio: fechaInicio,
-          fecha_fin: fechaFin,
-          tipo,
-          id_ubicacion: ubicacionInfo.id,
-          ubicacion: ubicacionActualizada,
-        };
-    
-        onSubmit(eventData);
-    
-      } catch (error) {
-        console.error("Error al procesar el formulario:", error);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      let imagenUrl = ubicacionInfo.imagen;
+
+      if (imageFile) {
+        imagenUrl = await uploadImage(imageFile);
       }
-    };
+
+      const ubicacionActualizada = {
+        ...ubicacionInfo,
+        imagen: imagenUrl
+      };
+
+      const eventData: EventHistorico = {
+        id: isEdit && eventAtom ? eventAtom.id : Date.now(),
+        nombre,
+        descripcion,
+        fecha_inicio: fechaInicio,
+        fecha_fin: fechaFin,
+        tipo,
+        id_ubicacion: ubicacionInfo.id,
+        ubicacion: ubicacionActualizada,
+      };
+
+      onSubmit(eventData);
+
+    } catch (error) {
+      console.error("Error al procesar el formulario:", error);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="">
@@ -309,55 +309,55 @@ export const EventHistoricoForm = ({
                 />
               </div>
               <div className="space-y-2">
-  <Label>Imagen</Label>
-  
-  {/* Mostrar vista previa si existe */}
-  {(imagePreview || ubicacionInfo.imagen) && (
-    <div className="mb-4">
-      <img 
-        src={imagePreview || ubicacionInfo.imagen} 
-        alt="Vista previa" 
-        className="h-40 object-cover rounded-md border"
-      />
-    </div>
-  )}
+                <Label>Imagen</Label>
 
-  {/* Opción 1: Subir archivo */}
-  <div className="mb-4">
-    <Label htmlFor="file-upload" className="cursor-pointer">
-      <Button variant="outline" type="button" asChild>
-        <span>Seleccionar archivo</span>
-      </Button>
-      <input
-        id="file-upload"
-        type="file"
-        accept="image/*"
-        onChange={handleImageUpload}
-        className="hidden"
-      />
-    </Label>
-    {imageFile && (
-      <span className="ml-2 text-sm text-muted-foreground">
-        {imageFile.name}
-      </span>
-    )}
-  </div>
+                {/* Mostrar vista previa si existe */}
+                {(imagePreview || ubicacionInfo.imagen) && (
+                  <div className="mb-4">
+                    <img
+                      src={imagePreview || ubicacionInfo.imagen}
+                      alt="Vista previa"
+                      className="h-40 object-cover rounded-md border"
+                    />
+                  </div>
+                )}
 
-  {/* Opción 2: Ingresar URL */}
-  <div>
-    <Label>O ingresar URL de imagen</Label>
-    <Input
-      value={ubicacionInfo.imagen}
-      onChange={(e) =>
-        setUbicacionInfo((prev) => ({
-          ...prev,
-          imagen: e.target.value,
-        }))
-      }
-      placeholder="https://ejemplo.com/imagen.jpg"
-    />
-  </div>
-</div>
+                {/* Opción 1: Subir archivo */}
+                <div className="mb-4">
+                  <Label htmlFor="file-upload" className="cursor-pointer">
+                    <Button variant="outline" type="button" asChild>
+                      <span>Seleccionar archivo</span>
+                    </Button>
+                    <input
+                      id="file-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                  </Label>
+                  {imageFile && (
+                    <span className="ml-2 text-sm text-muted-foreground">
+                      {imageFile.name}
+                    </span>
+                  )}
+                </div>
+
+                {/* Opción 2: Ingresar URL */}
+                <div>
+                  <Label>O ingresar URL de imagen</Label>
+                  <Input
+                    value={ubicacionInfo.imagen}
+                    onChange={(e) =>
+                      setUbicacionInfo((prev) => ({
+                        ...prev,
+                        imagen: e.target.value,
+                      }))
+                    }
+                    placeholder="https://ejemplo.com/imagen.jpg"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
