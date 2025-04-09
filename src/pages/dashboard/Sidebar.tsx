@@ -86,7 +86,12 @@ function Sidebar({ sidebarOpen, toggleSidebar, activeSection, navigateToSection 
             </div>
           )}
         </div>
-        
+        <button
+          className={`nav-item ${activeSection === 'biblioteca' ? 'active' : ''}`}
+          onClick={() => navigateToSection('biblioteca')}
+        >
+          <FaBook /> Biblioteca
+        </button>
         <button
           className={`nav-item ${activeSection === 'festividades' ? 'active' : ''}`}
           onClick={() => navigateToSection('festividades')}

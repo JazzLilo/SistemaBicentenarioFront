@@ -4,12 +4,17 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button";
 import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Cultura} from "@/components/interface";
 import { apiService } from '@/services/apiService';
+import { useNavigate } from "react-router-dom";
+import { PublicRoutes } from "@/routes/routes";
+import { useAtom } from "jotai";
+import { culturaAtom } from "@/context/context";
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -19,10 +24,11 @@ L.Icon.Default.mergeOptions({
 });
 
 const CulturalMap = () => {
+    const [,setCulturaValueAtom] = useAtom(culturaAtom);
     const [culturas, setCulturas] = useState<Cultura[]>([]);
     const [selectedCultura, setSelectedCultura] = useState<Cultura | null>(null);
     const [filterRegion, ] = useState<string>('');
-
+    const navigate = useNavigate();
     useEffect(() => {
 
         fetchCulturas();
@@ -39,6 +45,11 @@ const CulturalMap = () => {
                 console.error("Error fetching culturas:", error);
             }
             );
+    }
+
+    const handleVerMasClick = (cultura: Cultura) => {
+        setCulturaValueAtom(cultura);
+        navigate(`${PublicRoutes.Cultura}`)
     }
 
     const filteredCulturas = culturas.filter(cultura =>
@@ -150,6 +161,14 @@ const CulturalMap = () => {
                                             <p className="text-gray-600 mt-1 whitespace-pre-line">
                                                 {selectedCultura.descripcion}
                                             </p>
+                                        </div>
+
+                                        <div>
+                                            <Button
+                                                onClick={() => handleVerMasClick(selectedCultura)}
+                                            >
+                                                Ver Más
+                                            </Button>
                                         </div>
 
                                         <div className="pt-4 border-t">

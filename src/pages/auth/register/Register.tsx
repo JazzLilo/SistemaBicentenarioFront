@@ -325,6 +325,12 @@ const Register = () => {
                 localStorage.setItem('user', JSON.stringify({
                     correo: formData.email,
                     nombre: formData.fullName.split(' ')[0],
+                    apellidoPaterno: formData.fullName.split(' ')[1] || '',
+                    apellidoMaterno: formData.fullName.split(' ')[2] || '',
+                    telefono: formData.phone,
+                    pais: formData.countryName,
+                    genero: formData.gender,
+
                 }));
                 navigate(`${PrivateRoutes.Dashboard}`);
             }

@@ -1,4 +1,4 @@
-import { Historia, Presidentes, Patrimonio, Festividades, Videos, TimeLine, Mapa, Inicio, CulturaMap } from './sections'
+import { Historia, Presidentes, Patrimonio, Festividades, Videos, TimeLine, Mapa, Inicio, CulturaMap, BibliotecaShow } from './sections'
 
 interface MainContentProps {
   activeSection: string;
@@ -16,6 +16,7 @@ function MainContent({ activeSection }: MainContentProps) {
       {activeSection === 'patrimonio' && <Patrimonio />}
       {activeSection === 'presidentes' && <Presidentes />}
       {activeSection === 'cultura' && <CulturaMap />}
+      {activeSection === 'biblioteca' && <BibliotecaShow />}
     </div>
   );
 }

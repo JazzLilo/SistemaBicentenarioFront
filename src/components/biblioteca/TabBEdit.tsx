@@ -1,8 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import { Detalles } from './Detalles'
-import { FormCultura } from './FormCultura'
-import { Multimedia } from "./Multimedia";
+import { FormBiblio } from './FormBiblio'
 import { apiService } from "@/services/apiService";
 import { toast } from "sonner";
 
@@ -12,18 +11,19 @@ export const TabPEdit = () => {
   const handleUpdate = async (data: any) => {
 
     console.log(data)
-    await apiService.put(`ubicaciones/${data.ubicacion.id}`, data.ubicacion)
-    .then((response) => {console.log(response);
-    })
-    .catch((error) => {console.log(error)});
-    await apiService.put(`culturas/${data.id}`, {
-      nombre: data.nombre,
-      descripcion: data.descripcion,
-      id_ubicacion: data.ubicacion.id,
-      imagen: data.imagen,
+   
+    await apiService.put(`bibliotecas/${data.id}`, {
+      titulo: data.titulo,
+        autor: data.autor,
+        imagen: data.imagen,
+        fecha_publicacion: data.fecha_publicacion,
+        edicion: data.edicion,
+        id_tipo: data.id_tipo,
+        fuente: data.fuente,
+        enlace: data.enlace,
     }).then((response) => {
       console.log(response)
-      toast.success("Cultura actualizada correctamente")
+      toast.success("Libro actualizado correctamente")
     });
   }
 
@@ -52,17 +52,6 @@ export const TabPEdit = () => {
             Editar
           </span>
         </TabsTrigger>
-        <TabsTrigger
-          value="multimedia"
-          className="data-[state=active]:bg-white data-[state=active]:shadow-sm py-2 rounded-md transition-all"
-        >
-          <span className="flex items-center gap-2">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            Multimedia
-          </span>
-        </TabsTrigger>
       </TabsList>
 
       <div className="mt-6 flex-1 overflow-y-auto">
@@ -70,13 +59,10 @@ export const TabPEdit = () => {
           <Detalles />
         </TabsContent>
         <TabsContent value="editar" className="focus-visible:outline-none h-full">
-          <FormCultura
+          <FormBiblio
             mode="edit"
             onSubmit={handleUpdate}
           />
-        </TabsContent>
-        <TabsContent value="multimedia" className="focus-visible:outline-none h-full">
-          <Multimedia />
         </TabsContent>
       </div>
     </Tabs>

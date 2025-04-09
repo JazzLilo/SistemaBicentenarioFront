@@ -5,6 +5,7 @@ export const PublicRoutes = {
     VerifyCode: '/verify-code',
     ForgotPassword: '/forgot-password',
     Evento: '/eventos',
+    Cultura: '/culturaData',
 }
 
 export const PrivateRoutes = {

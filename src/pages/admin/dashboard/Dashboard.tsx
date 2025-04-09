@@ -7,7 +7,7 @@ import { NewsManagement } from './NewsManagement'
 import { EventManagement } from '@/components/eventoHist/EventManagement'
 import { CulturaManagement } from '@/components/cultura/CulturaManagement'
 import  PresidentesManagement  from '@/components/presidentes/PresidentesManagement'
-import { LibraryManagement } from './LibraryManagement'
+import { BibliotecaManagement } from '@/components/biblioteca/BibliotecaManagement'
 import { StatisticsPanel } from './StatisticsPanel'
 import { CommentModeration } from './CommentModeration'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
@@ -31,7 +31,7 @@ export const Dashboard = () => {
       case 'events': return <EventManagement />
       case 'cultura': return <CulturaManagement />
       case 'presidentes': return <PresidentesManagement />
-      case 'library': return <LibraryManagement />
+      case 'library': return <BibliotecaManagement />
       case 'comments': return <CommentModeration />
       case 'statistics': return <StatisticsPanel />
       default: return <DashboardHome />

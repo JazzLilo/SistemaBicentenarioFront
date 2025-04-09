@@ -8,3 +8,4 @@ export * from './Patrimonio';
 export * from './Presidentes';
 export * from './TimeLine';
 export * from './Videos';
+export * from './Biblioteca';

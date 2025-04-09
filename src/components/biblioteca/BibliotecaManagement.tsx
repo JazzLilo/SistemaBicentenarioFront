@@ -1,4 +1,3 @@
-import { Presidente } from "../interface/presidente"
 import { useState, useEffect } from "react"
 import {
   ColumnDef,
@@ -27,47 +26,62 @@ import { apiService } from "@/services/apiService"
 import { DialogCrear } from "./DialogCrear"
 import { DialogDetalles } from "./DialogDetalles"
 import { useAtom } from "jotai"
-import { presidenteAtom } from "@/context/context"
+import { bibliotecaAtom } from "@/context/context"
+import { Biblioteca } from "../interface"
 
-
-const PresidentesManagement = () => {
+export const BibliotecaManagement = () => {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [rowSelection, setRowSelection] = useState({})
-  const [pres, setPres] = useState<Presidente[]>([])
+  const [bibliotecas, setBliotecas] = useState<Biblioteca[]>([])
   const [loading, setLoading] = useState(false)
   const [globalFilter, setGlobalFilter] = useState('')
 
-
-
   const [open, setOpen] = useState(false)
   const [openCrear, setOpenCrear] = useState(false)
-  const [, setSelectedPres] = useState<Presidente | null>(null)
-  const [, setPresidente] = useAtom(presidenteAtom)
-  const columns: ColumnDef<Presidente>[] = [
+  const [, setSelectedBilioteca] = useState<Biblioteca | null>(null)
+  const [, setBiblioteca] = useAtom(bibliotecaAtom)
+
+  const fetchBiblioteca = async () => {
+    setLoading(true)
+    await apiService.get("bibliotecas").then((response) => {
+      const data: any = response.data
+      setBliotecas(data)
+    }).catch((error) => {
+      console.log(error)
+      toast.error("Error al cargar")
+    }).finally(() => {
+      setLoading(false)
+    })
+  }
+  useEffect(() => {
+    fetchBiblioteca()
+  }
+    , [])
+
+
+
+  const columns: ColumnDef<Biblioteca>[] = [
     {
-      accessorKey: "nombre",
-      header: "Nombre del Evento",
+      accessorKey: "titulo",
+      header: "Titulo",
       cell: ({ row }) => {
-        const nombre = row.original.nombre || "Sin nombre"
-        const apellido = row.original.apellido || "Sin apellido"
-        return `${nombre} ${apellido}`
+        const nombre = row.original.titulo || "Sin nombre"
+        return `${nombre}`
       }
     },
     {
-      accessorKey: "periodo",
-      header: "Periodo",
+      accessorKey: "autor",
+      header: "Autor",
       cell: ({ row }) => {
-        const inicio = new Date(row.original.periodo_inicio).toLocaleDateString();
-        const fin = new Date(row.original.periodo_fin).toLocaleDateString();
-        return `${inicio} - ${fin}`;
+        return row.original.autor || "Sin partido"
       }
     },
     {
-      accessorKey: "partido_politico",
-      header: "Partido Politico",
+      accessorKey: "tipo.tipo",
+      header: "Tipo",
       cell: ({ row }) => {
-        return row.original.partido_politico || "Sin partido"
+        return row.original.tipo.tipo || "Sin tipo"
       }
     },
     {
@@ -78,8 +92,8 @@ const PresidentesManagement = () => {
           <div className="flex space-x-2">
 
             <Button variant="outline" size="sm" onClick={() => {
-              setSelectedPres(row.original)
-              setPresidente(row.original)
+              setSelectedBilioteca(row.original)
+              setBiblioteca(row.original)
               setOpen(true)
             }}>
               Ver
@@ -93,35 +107,8 @@ const PresidentesManagement = () => {
     }
   ]
 
-  const handleRemove = async (id: number) => {
-    await apiService.delete(`presidentes/${id}`).then(() => {
-      fetchPresidentes()
-      toast.success("Presidente eliminado correctamente")
-    }
-    ).catch((err: any) => {
-      console.log(err)
-      toast.error("Error al eliminar el presidente")
-    })
-  }
-
-  const fetchPresidentes = async () => {
-    setLoading(true)
-    await apiService.get('presidentes/?skip=0&limit=100').then((res) => {
-      setPres(res.data as Presidente[])
-      setLoading(false)
-    }
-    ).catch((err: any) => {
-      console.log(err)
-      setLoading(false)
-      toast.error("Error al cargar los presidentes")
-    })
-  }
-  useEffect(() => {
-    fetchPresidentes()
-  }, [])
-
   const table = useReactTable({
-    data: pres,
+    data: bibliotecas,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -139,13 +126,30 @@ const PresidentesManagement = () => {
     onGlobalFilterChange: setGlobalFilter,
   })
 
+  const handleRemove = async (id: number) => {
+    setLoading(true)
+
+    await apiService.delete(`bibliotecas/${id}`).then((response) => {
+      console.log(response)
+      fetchBiblioteca()
+      toast.success("Libro eliminado correctamente")
+    }).catch((error) => {
+      console.log(error)
+      toast.error("Error al eliminar")
+    }).finally(() => {
+      setLoading(false)
+    }
+    )
+
+  }
+
 
   return (
     <div className="w-full space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center py-4 space-x-2">
           <Input
-            placeholder="Buscar Presidentes..."
+            placeholder="Buscar..."
             value={globalFilter ?? ''}
             onChange={(event) => setGlobalFilter(event.target.value)}
             className="max-w-md"
@@ -154,7 +158,7 @@ const PresidentesManagement = () => {
         <div className="flex space-x-2">
           <Button
             variant="outline"
-            onClick={fetchPresidentes}
+            onClick={fetchBiblioteca}
             disabled={loading}
           >
             <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
@@ -164,7 +168,7 @@ const PresidentesManagement = () => {
             onClick={() => setOpenCrear(true)}
           >
             <Plus className="mr-2 h-4 w-4" />
-            Agregar Presidente
+            Agregar Libro
           </Button>
         </div>
       </div>
@@ -212,7 +216,7 @@ const PresidentesManagement = () => {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  {loading ? 'Cargando eventos...' : 'No hay eventos registrados'}
+                  {loading ? 'Cargando eventos...' : 'No hay libros registrados'}
                 </TableCell>
               </TableRow>
             )}
@@ -222,7 +226,7 @@ const PresidentesManagement = () => {
 
       <div className="flex items-center justify-between py-4">
         <div className="text-sm text-muted-foreground">
-          Mostrando {table.getFilteredRowModel().rows.length} presidentes
+          Mostrando {table.getFilteredRowModel().rows.length} Libros
           {table.getFilteredSelectedRowModel().rows.length > 0 && (
             <span>, {table.getFilteredSelectedRowModel().rows.length} seleccionados</span>
           )}
@@ -255,5 +259,3 @@ const PresidentesManagement = () => {
     </div>
   )
 }
-
-export default PresidentesManagement

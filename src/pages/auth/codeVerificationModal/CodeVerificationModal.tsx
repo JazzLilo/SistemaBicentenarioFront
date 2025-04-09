@@ -46,6 +46,7 @@ const CodeVerificationModal = ({ email, onClose }:{
         e.preventDefault();
         setLoading(true);
         setError('');
+        alert(`Código de verificación: ${verificationCode}`);
         await apiService.post('users/verify_code', {
             code: verificationCode,
             email: email

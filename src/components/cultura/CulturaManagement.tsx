@@ -208,7 +208,7 @@ export const CulturaManagement = () => {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  {loading ? 'Cargando eventos...' : 'No hay eventos registrados'}
+                  {loading ? 'Cargando ...' : 'No hay eventos registrados'}
                 </TableCell>
               </TableRow>
             )}
@@ -218,7 +218,7 @@ export const CulturaManagement = () => {
 
       <div className="flex items-center justify-between py-4">
         <div className="text-sm text-muted-foreground">
-          Mostrando {table.getFilteredRowModel().rows.length} eventos
+          Mostrando {table.getFilteredRowModel().rows.length} Culturas
           {table.getFilteredSelectedRowModel().rows.length > 0 && (
             <span>, {table.getFilteredSelectedRowModel().rows.length} seleccionados</span>
           )}

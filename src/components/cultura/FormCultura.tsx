@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useAtom } from "jotai";
 import { culturaAtom } from "@/context/context";
 import { Cultura } from "@/components/interface";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ export const FormCultura = ({ mode, onSubmit }: FormCulturaProps) => {
 
   // Estado del formulario
   const [nombre, setNombre] = useState("");
-  const [descripcion, setDescripcion] = useState("");
+  const [, setDescripcion] = useState("");
   const [imagen, setImagen] = useState("");
 
 
@@ -48,11 +48,18 @@ export const FormCultura = ({ mode, onSubmit }: FormCulturaProps) => {
   const [imagePreviewUbicacion, setImagePreviewUbicacion] = useState<string | null>(null);
   const [, setIsUploadingUbicacion] = useState(false);
 
+  const [descripcion1, setDescripcion1] = useState("");
+  const [descripcion2, setDescripcion2] = useState("");
+  const [descripcion3, setDescripcion3] = useState("");
 
 
   useEffect(() => {
     if (isEdit && culturaAtomValue) {
+      const descParts = culturaAtomValue.descripcion.split(" - ");
       setNombre(culturaAtomValue.nombre);
+      setDescripcion1(descParts[0] || "");
+      setDescripcion2(descParts[1] || "");
+      setDescripcion3(descParts[2] || "");
       setDescripcion(culturaAtomValue.descripcion);
       setImagen(culturaAtomValue.imagen);
       setUbicacionInfo({
@@ -98,7 +105,7 @@ export const FormCultura = ({ mode, onSubmit }: FormCulturaProps) => {
       reader.readAsDataURL(file);
     }
 
-      
+
   };
 
   const uploadImage = async (file: File): Promise<string> => {
@@ -118,6 +125,8 @@ export const FormCultura = ({ mode, onSubmit }: FormCulturaProps) => {
     }
 
   };
+
+ 
 
   const uploadUbicacionImage = async (file: File): Promise<string> => {
     console.log("send")
@@ -140,26 +149,30 @@ export const FormCultura = ({ mode, onSubmit }: FormCulturaProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
+    const descripcionCompleta = [descripcion1, descripcion2, descripcion3]
+      .filter(Boolean)
+      .join(" - ");
+
     let finalImageUrl = imagen;
     let ubicacionImageUrl = ubicacionInfo.imagen;
-  
+
     try {
       // Subir imagen de cultura si hay archivo
       if (imageFile) {
         finalImageUrl = await uploadImage(imageFile);
       }
-  
+
       // Subir imagen de ubicación si hay archivo
       if (imagenUbicacion) {
         ubicacionImageUrl = await uploadUbicacionImage(imagenUbicacion);
       }
-  
+
       // Crear objeto final con los datos actualizados
       const culturaData: Cultura = {
         id: isEdit && culturaAtomValue ? culturaAtomValue.id : Date.now(),
         nombre,
-        descripcion,
+        descripcion: descripcionCompleta,
         imagen: finalImageUrl,
         id_ubicacion: ubicacionInfo.id,
         ubicacion: {
@@ -167,7 +180,7 @@ export const FormCultura = ({ mode, onSubmit }: FormCulturaProps) => {
           imagen: ubicacionImageUrl // Usamos la URL actualizada
         }
       };
-  
+
       onSubmit(culturaData);
     } catch (error) {
       console.error("Error al guardar:", error);
@@ -178,28 +191,52 @@ export const FormCultura = ({ mode, onSubmit }: FormCulturaProps) => {
     <form onSubmit={handleSubmit}>
       <Card>
         <CardHeader>
-          <CardTitle>{isEdit ? "Editar Cultura" : "Crear Nueva Cultura"}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label>Nombre de la Cultura *</Label>
+            <Label>Nombre de la Etnia *</Label>
             <Input
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
               required
-              placeholder="Ej: Cultura Tiwanaku"
+              placeholder="Ej: aymara "
             />
           </div>
 
-          <div>
-            <Label>Descripción *</Label>
-            <Textarea
-              value={descripcion}
-              onChange={(e) => setDescripcion(e.target.value)}
-              required
-              rows={4}
-              placeholder="Descripción detallada..."
-            />
+          <div className="space-y-4">
+            <div>
+              <Label className="mb-2">Datos de la Etnia(separa por '<div className="text-2xl" style={{
+                marginTop: "-10px",
+              }}>,</div> ')</Label>
+              <Label className="text-sm ">
+                Tradiciones</Label>
+              <Input
+                value={descripcion1}
+                onChange={(e) => setDescripcion1(e.target.value)}
+                placeholder="Ej: Tradiciones ancestrales, festividades..."
+                maxLength={833}
+              />
+            </div>
+            <Label className="text-sm ">
+              Lenguas</Label>
+            <div>
+              <Input
+                value={descripcion2}
+                onChange={(e) => setDescripcion2(e.target.value)}
+                placeholder="Ej: Lenguas nativas, arte local..."
+                maxLength={833}
+              />
+            </div>
+            <Label className="text-sm">
+              Costumbres</Label>
+            <div>
+              <Input
+                value={descripcion3}
+                onChange={(e) => setDescripcion3(e.target.value)}
+                placeholder="Ej: Costumbres únicas, gastronomía..."
+                maxLength={833}
+              />
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -232,7 +269,7 @@ export const FormCultura = ({ mode, onSubmit }: FormCulturaProps) => {
                   type="file"
                   accept="image/*"
                   onChange={(e) => {
-                    
+
 
                     handleImageUpload(e);
                   }}
@@ -331,9 +368,8 @@ export const FormCultura = ({ mode, onSubmit }: FormCulturaProps) => {
                       id="file-upload-ubicacion"
                       type="file"
                       accept="image/*"
-                      onChange={(e)=>
-                      {                
-                    handleImagenUbicacionUpload(e);
+                      onChange={(e) => {
+                        handleImagenUbicacionUpload(e);
                       }
                       }
                       className="hidden"

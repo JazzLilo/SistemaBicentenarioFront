@@ -21,7 +21,7 @@ function VerifyCode() {
       if (response.success) {
         console.log(response);
         if (response.success) {          
-          navigate(PublicRoutes.Login);
+          navigate(PublicRoutes.Register);
         }
       } 
     }).catch((err: any) => {

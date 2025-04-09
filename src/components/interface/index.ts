@@ -5,3 +5,4 @@ export * from './historia';
 export * from './presidente';
 export * from './ubicacion';
 export * from './user';
+export * from './biblioteca'

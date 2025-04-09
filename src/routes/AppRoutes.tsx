@@ -9,7 +9,7 @@ import RoutesNotFound from '@/lib/RoutesNotFound';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { Admin } from '@/pages/admin/Admin';
 import { ShowEvento } from '@/components/eventoHist/ShowEvento';
-
+import { ShowCultura } from '@/components/cultura/ShowCultura';
 /*
 <Route 
               path="/dashboard" 
@@ -36,7 +36,7 @@ function App() {
             <Route path={PublicRoutes.Register} element={<Register />} />
             <Route path={PublicRoutes.ForgotPassword} element={<ForgotPassword />} />
             <Route path={PublicRoutes.Evento} element={<ShowEvento />} />
-
+            <Route path={PublicRoutes.Cultura} element={<ShowCultura />} />
             
             <Route 
               path={PrivateRoutes.Dashboard} 
