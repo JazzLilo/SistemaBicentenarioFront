@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import  {DetallesEvento}  from './Detalles'
-import { FormBiblio } from './FormEvento'
+import { FormEvento } from './FormEvento'
 import { apiService } from "@/services/apiService";
 import { toast } from "sonner";
 
@@ -59,7 +59,7 @@ export const TabPEdit = () => {
           <DetallesEvento />
         </TabsContent>
         <TabsContent value="editar" className="focus-visible:outline-none h-full">
-          <FormBiblio
+          <FormEvento
             mode="edit"
             onSubmit={handleUpdate}
           />

@@ -4,7 +4,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import { FormBiblio } from "./FormEvento"
+import { FormEvento } from "./FormEvento"
 import { useAtom } from "jotai"
 import { useEffect } from "react"
 import { apiService } from "@/services/apiService"
@@ -65,7 +65,7 @@ export const DialogCrear = ({ open, onOpenChange }: DialogProps) => {
                     </DialogHeader>
 
                     <div className="flex-1 overflow-y-auto px-6">
-                        <FormBiblio
+                        <FormEvento
                             mode="create"
                             onSubmit={handleSubmit}
                         />

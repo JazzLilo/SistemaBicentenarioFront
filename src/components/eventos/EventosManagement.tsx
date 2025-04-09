@@ -76,6 +76,12 @@ export const EventosManagement = () => {
             cell: ({ row }) => {
                 return row.original.fecha_hora || "Sin Fecha"
             }
+        },{
+            accessorKey: "categoria",
+            header: "Categoria",
+            cell: ({ row }) => {
+                return row.original.categoria || "Sin categoria"
+            }
         },
         {
             accessorKey: "ubicacion.nombre",
@@ -172,7 +178,7 @@ export const EventosManagement = () => {
                         onClick={() => setOpenCrear(true)}
                     >
                         <Plus className="mr-2 h-4 w-4" />
-                        Agregar Libro
+                        Agregar Evento
                     </Button>
                 </div>
             </div>

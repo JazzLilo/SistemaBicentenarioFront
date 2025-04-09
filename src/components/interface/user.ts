@@ -1,7 +1,7 @@
 export interface User {
     apellidoMaterno?: string;
     apellidoPaterno?: string;
-    cantIntentos?: number;
+    cantIntentos: number;
     ciudad?: string;
     correo? : string;
     email_verified_at? : string;
