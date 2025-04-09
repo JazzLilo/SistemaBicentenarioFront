@@ -12,6 +12,7 @@ const titles = {
   statistics: 'Estadísticas y Análisis',
   presidentes: 'Gestión de Presidentes',
   cultura: 'Gestión de Culturas',
+  eventos: 'Gestión de Eventos Históricos',
 }
 
 export const Header = ({ activeTab, onMenuClick }:

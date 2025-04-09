@@ -6,3 +6,4 @@ export * from './presidente';
 export * from './ubicacion';
 export * from './user';
 export * from './biblioteca'
+export * from './evento'

@@ -1,27 +1,29 @@
 import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
-import { 
+import {
   LayoutDashboard,
   Users,
-  Calendar,
-  Book,
-  MessageSquare,
-  BarChart2,
+  CalendarDays,
+  BookOpen,
+  Landmark,
+  LibraryBig,
+  MessagesSquare,
+  BarChart3,
   Menu,
   X,
-  
 } from 'lucide-react'
 import { FaDoorClosed } from "react-icons/fa";
 import { remove_data } from '@/storage/auth_storage';
 const menuItems = [
   { id: 'dashboard', label: 'Panel Principal', icon: LayoutDashboard },
   { id: 'users', label: 'Usuarios', icon: Users },
-  { id: 'events', label: 'Eventos Historicos', icon: Calendar },
-  { id: 'library', label: 'Biblioteca', icon: Book },
-  { id: 'cultura', label: 'Cultura', icon: Book },
-  { id: 'presidentes', label: 'presidentes', icon: Book },
-  { id: 'comments', label: 'Comentarios', icon: MessageSquare },
-  { id: 'statistics', label: 'Estadísticas', icon: BarChart2 },
+  { id: 'events', label: 'Eventos Históricos', icon: CalendarDays },
+  { id: 'library', label: 'Biblioteca', icon: LibraryBig },
+  { id: 'cultura', label: 'Cultura', icon: BookOpen },
+  { id: 'presidentes', label: 'Presidentes', icon: Landmark },
+  { id: 'eventos', label: 'Eventos', icon: CalendarDays },
+  { id: 'comments', label: 'Comentarios', icon: MessagesSquare },
+  { id: 'statistics', label: 'Estadísticas', icon: BarChart3 },
 ]
 
 export const Sidebar = ({ activeTab, setActiveTab }:

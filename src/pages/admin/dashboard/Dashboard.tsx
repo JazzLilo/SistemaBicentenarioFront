@@ -8,12 +8,13 @@ import { EventManagement } from '@/components/eventoHist/EventManagement'
 import { CulturaManagement } from '@/components/cultura/CulturaManagement'
 import  PresidentesManagement  from '@/components/presidentes/PresidentesManagement'
 import { BibliotecaManagement } from '@/components/biblioteca/BibliotecaManagement'
+import { EventosManagement } from '@/components/eventos/EventosManagement'
 import { StatisticsPanel } from './StatisticsPanel'
 import { CommentModeration } from './CommentModeration'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 export const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState<'users' | 'dashboard' | 'events' | 'history' | 'library' | 'comments' | 'statistics' | 'news' | 'cultura' | 'presidentes'>('dashboard')
+  const [activeTab, setActiveTab] = useState<'users' | 'eventos' |'dashboard' | 'events' | 'history' | 'library' | 'comments' | 'statistics' | 'news' | 'cultura' | 'presidentes'>('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const isDesktop = useMediaQuery('(min-width: 768px)')
 
@@ -34,6 +35,7 @@ export const Dashboard = () => {
       case 'library': return <BibliotecaManagement />
       case 'comments': return <CommentModeration />
       case 'statistics': return <StatisticsPanel />
+      case 'eventos': return <EventosManagement />
       default: return <DashboardHome />
     }
   }
