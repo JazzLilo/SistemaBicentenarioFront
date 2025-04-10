@@ -9,7 +9,7 @@ import { useAtom } from "jotai"
 import { useEffect } from "react"
 import { apiService } from "@/services/apiService"
 import { toast } from "sonner"
-import { bibliotecaAtom } from "@/context/context"
+import { eventoAtom } from "@/context/context"
 
 interface DialogProps {
     open: boolean
@@ -18,7 +18,7 @@ interface DialogProps {
 
 export const DialogCrear = ({ open, onOpenChange }: DialogProps) => {
 
-    const [, setCultura] = useAtom(bibliotecaAtom)
+    const [, setCultura] = useAtom(eventoAtom)
 
     useEffect(() => {
         setCultura(undefined)
@@ -26,31 +26,35 @@ export const DialogCrear = ({ open, onOpenChange }: DialogProps) => {
 
     const handleSubmit = async (data: any) => {
         console.log("Formulario enviado:", data)
-
-       await apiService.post("bibliotecas",{
-        titulo: data.titulo,
-        autor: data.autor,
-        imagen: data.imagen,
-        fecha_publicacion: data.fecha_publicacion,
-        edicion: data.edicion,
-        id_tipo: data.id_tipo,
-        fuente: data.fuente,
-        enlace: data.enlace,
-        }).then((response) => {
-            console.log(response)
-            toast.success("Libro creado correctamente")
+        apiService.post('ubicaciones', data.ubicacion).then((res) => {
+            console.log(res.data)
+            const ubicacion_id = res.data
+            apiService.post('eventos-agendables/', {
+                nombre: data.nombre,
+                categoria: data.categoria,
+                estado: data.estado,
+                descripcion: data.descripcion,
+                fecha_hora: data.fecha_hora,
+                id_ubicacion: ubicacion_id,
+                id_organizador: data.id_organizador,
+                imagen: data.imagen
+            }).then((res) => {
+                console.log(res.data)
+                toast.success("Evento creado correctamente")
+                onOpenChange(false)
+            }).catch((err) => {
+                console.log(err)
+                toast.error("Error al crear")
+            })
+        }).catch((err) => {
+            console.log(err)
+            toast.error("Error al crear ")
+        }).finally(() => {
             onOpenChange(false)
         })
-        .catch((error) => {
-            console.log(error)
-            toast.error("Error al crear")
-        }
-        ).finally(() => {
-            setCultura(undefined)
-        }
-        )   
 
-       
+ 
+
 
     }
 

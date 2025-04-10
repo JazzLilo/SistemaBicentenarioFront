@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-import  {DetallesEvento}  from './Detalles'
+import { DetallesEvento } from './Detalles'
 import { FormEvento } from './FormEvento'
 import { apiService } from "@/services/apiService";
 import { toast } from "sonner";
@@ -11,20 +11,28 @@ export const TabPEdit = () => {
   const handleUpdate = async (data: any) => {
 
     console.log(data)
-   
-    await apiService.put(`bibliotecas/${data.id}`, {
-      titulo: data.titulo,
-        autor: data.autor,
-        imagen: data.imagen,
-        fecha_publicacion: data.fecha_publicacion,
-        edicion: data.edicion,
-        id_tipo: data.id_tipo,
-        fuente: data.fuente,
-        enlace: data.enlace,
-    }).then((response) => {
-      console.log(response)
-      toast.success("Libro actualizado correctamente")
-    });
+    await apiService.put(`ubicaciones/${data.ubicacion.id}`, data.ubicacion)
+    .then((response) => {console.log(response);
+    })
+    .catch((error) => {console.log(error)});
+    await apiService.put(`eventos-agendables/${data.id}`, {
+      nombre: data.nombre, 
+      descripcion: data.descripcion, 
+      categoria: data.categoria, 
+      estado: data.estado,
+      fecha_hora: data.fecha_hora,
+      id_ubicacion: data.id_ubicacion,
+      imagen: data.imagen,
+    }).then((res) => {
+      console.log(res.data)
+      toast.success("Evento actualizado correctamente")
+    }).catch((err) => {
+      console.log(err)
+      toast.error("Error al actualizar")
+    }).finally(() => {
+    })
+
+
   }
 
   return (

@@ -8,17 +8,16 @@ FRONT
 
  entonces bajara todo lo que haya subido
  cuando termine 
- yarn install
- por si instale alguna dependencia que se haya agregado
+
+borrar carpeta 
+node_modules
+borrar archivo
+package_lock.json
+
+escribir en la terminal
+yarn install
 
 y 
+
 npm run dev
-para ejecutar el proyecto
------------------------------
-BACK
------------------------------
-para el back sera 
-git pull
-y ya
-no creo instalar mas librerias 
-eso es  backet o fonted/
+

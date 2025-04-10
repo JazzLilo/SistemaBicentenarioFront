@@ -13,4 +13,5 @@ export interface User {
     pais? : string;
     telefono? : string;
     ultimoIntentoFallido? : string;
+    roles? : string[];
 }

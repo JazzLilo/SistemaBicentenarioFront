@@ -3,7 +3,6 @@ import { useAtom } from 'jotai';
 import { culturaAtom } from '@/context/context';
 import { MapaVisualizacion } from '../map/MapaView';
 import { apiService } from '@/services/apiService';
-import { Cultura } from '../interface';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
